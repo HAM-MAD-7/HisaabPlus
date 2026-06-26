@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="HisaabPlus.Api/HisaabPlus.Api.csproj" />
+  <Project Path="HisaabPlus.Data/HisaabPlus.Data.csproj" />
+  <Project Path="HisaabPlus.Services/HisaabPlus.Services.csproj" />
+  <Project Path="HisaabPlus.Web/HisaabPlus.Web.csproj" />
+</Solution>

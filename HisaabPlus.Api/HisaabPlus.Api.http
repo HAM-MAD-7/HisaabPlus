@@ -1,0 +1,6 @@
+@HisaabPlus.Api_HostAddress = http://localhost:5223
+
+GET {{HisaabPlus.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
