@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using BCrypt.Net;
 using HisaabPlus.Data.Entities;
+using Microsoft.Extensions.Configuration;
 
 namespace HisaabPlus.Services.Implementations
 {
@@ -14,10 +15,12 @@ namespace HisaabPlus.Services.Implementations
     {
         private readonly IJwtService _jwtService;
         private readonly AppDbContext _db;
-        public AuthService(IJwtService jwtService, AppDbContext db)
+        private readonly IConfiguration _configuration;
+        public AuthService(IJwtService jwtService, AppDbContext db, IConfiguration configuration)
         {
             _jwtService = jwtService;
             _db = db;
+            _configuration = configuration;
         }
         public async Task<AuthResponseDTO> RegisterAsync(RegisterDTO registerDTO)
         {
@@ -72,8 +75,8 @@ namespace HisaabPlus.Services.Implementations
             {
                 throw new Exception("Shop Not Found!");
             }
-            var veriftPassword = BCrypt.Net.BCrypt.Verify(loginDTO.Password, shopExists.PasswordHash);
-            if(veriftPassword == false)
+            var verifyPassword = BCrypt.Net.BCrypt.Verify(loginDTO.Password, shopExists.PasswordHash);
+            if(verifyPassword == false)
             {
                 throw new Exception("Invalid Password!");
             }
@@ -90,6 +93,25 @@ namespace HisaabPlus.Services.Implementations
                 ShopName = shopExists.ShopName,
                 OwnerName = shopExists.OwnerName,
                 Role = userExists.Role,
+                ExpiresAt = DateTime.UtcNow.AddHours(8)
+            };
+        }
+        public async Task<AuthResponseDTO> AdminLoginAsync(AdminLoginDTO adminLoginDTO)
+        {
+            var username = _configuration["AdminSettings:Username"];
+            var password = _configuration["AdminSettings:Password"];
+            if(adminLoginDTO.UserName != username || adminLoginDTO.Password != password)
+            {
+                throw new Exception("Invalid admin credentials");
+            }
+            var generatedToken = _jwtService.GenerateToken(0, 0, "Admin", "AdminPanel");
+            return new AuthResponseDTO
+            {
+                Token =generatedToken,
+                ShopId = 0,
+                ShopName = "AdminPanel",
+                OwnerName = username,
+                Role = "Admin",
                 ExpiresAt = DateTime.UtcNow.AddHours(8)
             };
         }

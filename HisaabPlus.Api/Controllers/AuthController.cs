@@ -25,7 +25,7 @@ namespace HisaabPlus.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex.Message);                              
             }
         }
         [HttpPost("login")]
@@ -34,6 +34,19 @@ namespace HisaabPlus.Api.Controllers
             try
             {
                 var result = await _authService.LoginAsync(loginDTO);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("admin-login")]
+        public async Task<IActionResult> AdminLogin(AdminLoginDTO adminLoginDTO)
+        {
+            try
+            {
+                var result = await _authService.AdminLoginAsync(adminLoginDTO);
                 return Ok(result);
             }
             catch (Exception ex)

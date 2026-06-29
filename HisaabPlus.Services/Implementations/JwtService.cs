@@ -27,7 +27,7 @@ namespace HisaabPlus.Services.Implementations
             {
                 new Claim("ShopId", shopId.ToString()),
                 new Claim("UserId", userId.ToString()),
-                new Claim("Role", role),
+                new Claim(ClaimTypes.Role, role),
                 new Claim("ShopName", shopName)
             };
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
