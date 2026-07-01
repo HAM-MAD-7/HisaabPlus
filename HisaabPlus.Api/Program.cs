@@ -28,6 +28,8 @@ builder.Services.AddScoped<IAdminService, AdminService>();
 
 builder.Services.AddScoped<IProductService, ProductService>();
 
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"];
 var issuer = jwtSettings["Issuer"];
