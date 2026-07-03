@@ -32,6 +32,8 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 builder.Services.AddScoped<ISupplierService, SupplierService>();
 
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["SecretKey"];
 var issuer = jwtSettings["Issuer"];
