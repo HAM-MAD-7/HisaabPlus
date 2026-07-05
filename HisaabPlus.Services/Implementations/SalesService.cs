@@ -62,7 +62,7 @@ namespace HisaabPlus.Services.Implementations
                 product.CurrentStock -= item.Quantity;
             }
             await _db.SaveChangesAsync();
-            if(createSaleDTO.PaymentType.ToLower() == "Loan" && createSaleDTO.CustomerId.HasValue)
+            if(createSaleDTO.PaymentType.ToLower() == "loan" && createSaleDTO.CustomerId.HasValue)
             {
                 var getCustomer = await _db.Customers.FirstOrDefaultAsync(p => p.CustomerId == createSaleDTO.CustomerId.Value && p.ShopId == shopId);
                 if(getCustomer == null)
