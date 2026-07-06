@@ -1,0 +1,57 @@
+﻿@page
+@model HisaabPlus.Web.Pages.Dashboard.IndexModel
+@{
+}
+
+<div>
+    <div>
+        <h1>Today's Date</h1>
+        <p>@Model.Dashboard.TodayDate</p>
+    </div>
+
+    <div>
+        <h1>Today's Total Sales</h1>
+        <p>@Model.Dashboard.TodayTotalSales</p>
+    </div>
+
+    <div>
+        <h1>Today's Cash Sales</h1>
+        <p>@Model.Dashboard.TodayCashSales</p>
+    </div>
+
+    <div>
+        <h1>Today's Loan Sales</h1>
+        <p>@Model.Dashboard.TodayLoanSales</p>
+    </div>
+
+    <div>
+        <h1>Total Customer Balance</h1>
+        <p>@Model.Dashboard.TotalCustomerBalance</p>
+    </div>
+
+    <div>
+        <h1>Total Supplier Balance</h1>
+        <p>@Model.Dashboard.TotalSupplierBalance</p>
+    </div>
+
+    <div>
+        <h1>Today's Estimated Profit</h1>
+        <p>@Model.Dashboard.TodayEstimatedProfit</p>
+    </div>
+</div>
+
+@if(@Model.Dashboard.LowStockCount > 0)
+{
+    <div>
+        <h1>Low Stock Count</h1>
+        <p>@Model.Dashboard.LowStockCount</p>
+    </div>
+}
+
+@if(!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div>
+        <h1>Message</h1>
+        <p>@Model.ErrorMessage</p>
+    </div>
+}

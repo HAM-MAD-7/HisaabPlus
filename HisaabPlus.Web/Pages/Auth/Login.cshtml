@@ -1,0 +1,28 @@
+﻿@page
+@model HisaabPlus.Web.Pages.Auth.LoginModel
+@{
+}
+<form method="post" asp-antiforgery="true">
+    @Html.AntiForgeryToken()
+
+    <div>
+        <label asp-for="Input.PhoneNumber"></label>
+        <input asp-for="Input.PhoneNumber"/>
+        <span asp-validation-for="Input.PhoneNumber"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.Password"></label>
+        <input asp-for="Input.Password"/>
+        <span asp-validation-for="Input.Password"></span>
+    </div>
+
+    @if(!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div>
+            @Model.ErrorMessage
+        </div>     
+    }
+
+    <button type="submit">Login</button>
+</form>
