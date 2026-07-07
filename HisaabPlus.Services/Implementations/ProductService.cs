@@ -97,7 +97,6 @@ namespace HisaabPlus.Services.Implementations
             getProduct.Category = productDTO.Category;
             getProduct.SellingPrice = productDTO.SellingPrice;
             getProduct.LowStockLimit = productDTO.LowStockLimit;
-            getProduct.IsActive = productDTO.IsActive;
             getProduct.Unit = productDTO.Unit;
             getProduct.CurrentStock = productDTO.CurrentStock;
             await _db.SaveChangesAsync();

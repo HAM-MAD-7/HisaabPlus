@@ -1,0 +1,63 @@
+﻿@page
+@model HisaabPlus.Web.Pages.Products.EditModel
+@{
+}
+<form method="post">
+    <div>
+        <label asp-for="Input.ProductName"></label>
+        <input asp-for="Input.ProductName" />
+        <span asp-validation-for="Input.ProductName"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.Category"></label>
+        <input asp-for="Input.Category" />
+        <span asp-validation-for="Input.Category"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.PurchasePrice"></label>
+        <input asp-for="Input.PurchasePrice" />
+        <span asp-validation-for="Input.PurchasePrice"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.SellingPrice"></label>
+        <input asp-for="Input.SellingPrice" />
+        <span asp-validation-for="Input.SellingPrice"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.CurrentStock"></label>
+        <input asp-for="Input.CurrentStock" />
+        <span asp-validation-for="Input.CurrentStock"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.Unit"></label>
+        <input asp-for="Input.Unit" />
+        <span asp-validation-for="Input.Unit"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.LowStockLimit"></label>
+        <input asp-for="Input.LowStockLimit" />
+        <span asp-validation-for="Input.LowStockLimit"></span>
+    </div>
+
+    <div>
+        <input type="hidden" asp-for="Input.ProductId"/>
+        <button type="submit">Submit</button>
+    </div>
+
+    @if(!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div style="color:red">
+            @Model.ErrorMessage
+        </div>    
+    }
+
+    <div>
+        <a asp-page="/Products/Index">Cancel</a>
+    </div>
+</form>

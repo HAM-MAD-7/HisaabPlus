@@ -15,10 +15,6 @@ namespace HisaabPlus.Web.Pages.Auth
         [BindProperty]
         public Models.LoginInputModel Input { get; set; } = new();
         public string ErrorMessage { get; set; } = "";
-        public void OnGet()
-        {
-
-        }
         public async Task<IActionResult> OnPostAsync()
         {
             try
