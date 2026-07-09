@@ -1,0 +1,42 @@
+﻿@page
+@model HisaabPlus.Web.Pages.Customers.IndexModel
+@{
+}
+<a asp-page="/Customers/Add">Add New Customer</a>
+@if(!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <p style="color:red">@Model.ErrorMessage</p>
+}
+<table>
+    <thead>
+        <tr>
+            <th>FullName</th>
+            <th>PhoneNumber</th>
+            <th>TotalBalance</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.Customers)
+        {
+            <tr>
+                <td>@item.FullName</td>
+                <td>@item.PhoneNumber</td>
+                <td>
+                    @if(item.TotalBalance > 0)
+                    {
+                        <span style="color:red">@item.TotalBalance</span>
+                    }
+                    else
+                    {
+                        <span>@item.TotalBalance</span>
+                    }
+                </td>
+                <td>
+                    <a asp-page="/Customers/Detail" asp-route-customerId="@item.CustomerId">View Detail</a>
+                    <a asp-page="/Customers/Edit" asp-route-customerId="@item.CustomerId">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

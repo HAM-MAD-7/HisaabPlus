@@ -1,0 +1,33 @@
+﻿@page
+@model HisaabPlus.Web.Pages.Customers.RecordPaymentModel
+@{
+}
+<form method="post">
+    <div>
+        <label asp-for="Input.Amount"></label>
+        <input asp-for="Input.Amount" />
+        <span asp-validation-for="Input.Amount"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.Notes"></label>
+        <input asp-for="Input.Notes" />
+        <span asp-validation-for="Input.Notes"></span>
+    </div>
+
+    <div>
+        <input type="hidden" asp-for="Input.CustomerId" />
+        <button type="submit">Submit</button>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div style="color:red">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <div>
+        <a asp-page="/Customers/Detail" asp-route-customerId="@Model.Input.CustomerId">Cancel</a>
+    </div>
+</form>

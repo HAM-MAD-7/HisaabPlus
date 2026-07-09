@@ -1,0 +1,38 @@
+﻿@page
+@model HisaabPlus.Web.Pages.Customers.AddModel
+@{
+}
+<form method="post">
+    <div>
+        <label asp-for="Input.FullName"></label>
+        <input asp-for="Input.FullName"/>
+        <span asp-validation-for="Input.FullName"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.PhoneNumber"></label>
+        <input asp-for="Input.PhoneNumber" />
+        <span asp-validation-for="Input.PhoneNumber"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.Address"></label>
+        <input asp-for="Input.Address" />
+        <span asp-validation-for="Input.Address"></span>
+    </div>
+
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+
+    @if(!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div style="color:red">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <div>
+        <a asp-page="/Customers/Index">Cancel</a>
+    </div>
+</form>

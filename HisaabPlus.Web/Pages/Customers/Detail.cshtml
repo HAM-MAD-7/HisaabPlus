@@ -1,0 +1,78 @@
+﻿@page
+@model HisaabPlus.Web.Pages.Customers.DetailModel
+@{
+}
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div style="color:red">@Model.ErrorMessage</div>
+}
+<div>
+    <h1>Customer Info</h1>
+    <p>@Model.Customer.FullName</p>
+    <p>@Model.Customer.PhoneNumber</p>
+    <p>@Model.Customer.Address</p>
+</div>
+
+<div>
+    <h1>Total Balance</h1>
+    @if(Model.Customer.TotalBalance > 0)
+    {
+        <span style="color:red">@Model.Customer.TotalBalance</span>
+    }
+    else
+    {
+        <span>@Model.Customer.TotalBalance</span>
+    }
+</div>
+
+<h1>Loan History Record</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Sale Id</th>
+            <th>Sale Date</th>
+            <th>Total Amount</th>
+            <th>Remaining Amount</th>
+            <th>Payment Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var loan in Model.Customer.LoanHistory)
+        {
+            <tr>
+                <td>@loan.SaleId</td>
+                <td>@loan.SaleDate</td>
+                <td>@loan.TotalAmount</td>
+                <td>@loan.RemainingAmount</td>
+                <td>@loan.PaymentType</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h1>Payment History Record</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Payment Id</th>
+            <th>Amount</th>
+            <th>Payment Date</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var pay in Model.Customer.PaymentHistory)
+        {
+            <tr>
+                <td>@pay.PaymentId</td>
+                <td>@pay.Amount</td>
+                <td>@pay.PaymentDate</td>
+                <td>@pay.Notes</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+<div>
+    <a asp-page="/Customers/RecordPayment" asp-route-customerId="@Model.Customer.CustomerId">Record_Payment</a>
+</div>
