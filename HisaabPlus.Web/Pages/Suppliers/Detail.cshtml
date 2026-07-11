@@ -1,0 +1,84 @@
+﻿@page
+@model HisaabPlus.Web.Pages.Suppliers.DetailModel
+@{
+}
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div>
+        <p style="color:red">@Model.ErrorMessage</p>
+    </div>
+}
+<div>
+    <h1>Supplier Info</h1>
+    <p>@Model.SupplierDetail.SupplierId</p>
+    <p>@Model.SupplierDetail.SupplierName</p>
+    <p>@Model.SupplierDetail.PhoneNumber</p>
+    <p>@Model.SupplierDetail.CompanyName</p>
+    <div>
+        <label>Total Balance</label>
+        @if (Model.SupplierDetail.TotalBalance > 0)
+        {
+            <p style="color:red">@Model.SupplierDetail.TotalBalance</p>
+        }
+        else
+        {
+            <p>@Model.SupplierDetail.TotalBalance</p>
+        }
+    </div>
+</div>
+<h1>Purchase History Record</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Purchase Id</th>
+            <th>Purchase Date</th>
+            <th>Total Amount</th>
+            <th>Paid Amount</th>
+            <th>Remaining Amount</th>
+            <th>Payment Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.SupplierDetail.PurchaseHistory)
+        {
+            <tr>
+                <td>@item.PurchaseId</td>
+                <td>@item.PurchaseDate</td>
+                <td>@item.TotalAmount</td>
+                <td>@item.PaidAmount</td>
+                <td>@item.RemainingAmount</td>
+                <td>@item.PaymentType</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<h1>Payment History Record</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Payment Id</th>
+            <th>Amount</th>
+            <th>Payment Date</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.SupplierDetail.PaymentHistory)
+        {
+            <tr>
+                <td>@item.PaymentId</td>
+                <td>@item.Amount</td>
+                <td>@item.PaymentDate</td>
+                <td>@item.Notes</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <a asp-page="/Suppliers/RecordStockPurchase" asp-route-supplierId="@Model.SupplierDetail.SupplierId">Record Stock Purchase</a>
+    <br />
+    <a asp-page="/Suppliers/RecordPayment" asp-route-supplierId="@Model.SupplierDetail.SupplierId">Record Payment</a>
+</div>
+<div>
+    <a asp-page="/Suppliers/Index">Back to suppliers</a>
+</div>

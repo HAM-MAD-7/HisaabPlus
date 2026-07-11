@@ -1,0 +1,12 @@
+﻿namespace HisaabPlus.Web.Models
+{
+    public class SupplierResponseModel
+    {
+        public int SupplierId { get; set; }
+        public string SupplierName { get; set; } = "";
+        public string PhoneNumber { get; set; } = "";
+        public string CompanyName { get; set; } = "";
+        public decimal TotalBalance { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
+}

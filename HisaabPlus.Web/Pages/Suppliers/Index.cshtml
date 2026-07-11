@@ -1,0 +1,52 @@
+﻿@page
+@model HisaabPlus.Web.Pages.Suppliers.IndexModel
+@{
+}
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div>
+        <p style="color:red">@Model.ErrorMessage</p>
+    </div>
+}
+<div>
+    <a asp-page="/Suppliers/Add">Add New Supplier</a>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>Supplier Id</th>
+            <th>Supplier Name</th>
+            <th>Phone Number</th>
+            <th>Company Name</th>
+            <th>Total Balance</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var supplier in Model.Suppliers)
+        {
+            <tr>
+                <td>@supplier.SupplierId</td>
+                <td>@supplier.SupplierName</td>
+                <td>@supplier.PhoneNumber</td>
+                <td>@supplier.CompanyName</td>
+                <td>
+                    @if(supplier.TotalBalance > 0)
+                    {
+                        <p style="color:red">@supplier.TotalBalance</p>
+                    }
+                    else
+                    {
+                        <p>@supplier.TotalBalance</p>
+                    }
+                </td>
+                <td>
+                    <div>
+                        <a asp-page="/Suppliers/Detail" asp-route-supplierId="@supplier.SupplierId">View Detail</a>
+                        <a asp-page="/Suppliers/Edit" asp-route-supplierId="@supplier.SupplierId">Edit</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

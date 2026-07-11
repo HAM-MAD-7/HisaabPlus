@@ -1,0 +1,38 @@
+﻿@page
+@model HisaabPlus.Web.Pages.Suppliers.AddModel
+@{
+}
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div>
+        <p style="color:red">@Model.ErrorMessage</p>
+    </div>
+}
+
+<form method="post">
+    <div>
+        <label asp-for="Input.SupplierName"></label>
+        <input asp-for="Input.SupplierName"/>
+        <span asp-validation-for="Input.SupplierName"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.PhoneNumber"></label>
+        <input asp-for="Input.PhoneNumber" />
+        <span asp-validation-for="Input.PhoneNumber"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.CompanyName"></label>
+        <input asp-for="Input.CompanyName" />
+        <span asp-validation-for="Input.CompanyName"></span>
+    </div>
+
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+
+    <div>
+        <a asp-page="/Suppliers/Index">Cancel</a>
+    </div>
+</form>

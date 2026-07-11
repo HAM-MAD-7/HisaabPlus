@@ -136,7 +136,7 @@ namespace HisaabPlus.Services.Implementations
                     ProductId = product.ProductId,
                     Quantity = item.Quantity,
                     UnitPrice = item.UnitPrice,
-                    TotalPrice = item.TotalPrice,
+                    TotalPrice = item.TotalPrice
                 };
                 product.CurrentStock += item.Quantity;
                 await _db.StockPurchaseItems.AddAsync(stockPurchaseItem);

@@ -3,28 +3,18 @@ using HisaabPlus.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace HisaabPlus.Web.Pages.Products
+namespace HisaabPlus.Web.Pages.Suppliers
 {
-    public class AddModel : PageModel
+    public class DetailModel : PageModel
     {
         private readonly ApiService _apiService;
-        public AddModel(ApiService apiService)
+        public DetailModel(ApiService apiService)
         {
             _apiService = apiService;
         }
-        [BindProperty]
-        public ProductResponseModel Input { get; set; } = new();
+        public SupplierDetailModel SupplierDetail { get; set; } = new();
         public string ErrorMessage { get; set; } = "";
-        public IActionResult OnGet()
-        {
-            var getToken = HttpContext.Session.GetString("JwtToken");
-            if (getToken == null)
-            {
-                return RedirectToPage("/Auth/Login");
-            }
-            return Page();
-        }
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnGetAsync(int supplierId)
         {
             try
             {
@@ -33,8 +23,8 @@ namespace HisaabPlus.Web.Pages.Products
                 {
                     return RedirectToPage("/Auth/Login");
                 }
-                Input = await _apiService.PostAsync<ProductResponseModel>("api/product/AddProduct", Input, getToken);
-                return RedirectToPage("/Products/Index");
+                SupplierDetail = await _apiService.GetAsync<SupplierDetailModel>($"api/supplier/GetOneSupplier/{supplierId}", getToken);
+                return Page();
             }
             catch (Exception ex)
             {

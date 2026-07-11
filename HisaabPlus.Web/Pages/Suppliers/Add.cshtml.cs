@@ -3,7 +3,7 @@ using HisaabPlus.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace HisaabPlus.Web.Pages.Products
+namespace HisaabPlus.Web.Pages.Suppliers
 {
     public class AddModel : PageModel
     {
@@ -13,7 +13,7 @@ namespace HisaabPlus.Web.Pages.Products
             _apiService = apiService;
         }
         [BindProperty]
-        public ProductResponseModel Input { get; set; } = new();
+        public SupplierResponseModel Input { get; set; } = new();
         public string ErrorMessage { get; set; } = "";
         public IActionResult OnGet()
         {
@@ -33,8 +33,8 @@ namespace HisaabPlus.Web.Pages.Products
                 {
                     return RedirectToPage("/Auth/Login");
                 }
-                Input = await _apiService.PostAsync<ProductResponseModel>("api/product/AddProduct", Input, getToken);
-                return RedirectToPage("/Products/Index");
+                await _apiService.PostAsync<SupplierResponseModel>("api/supplier/AddSupplier", Input, getToken);
+                return RedirectToPage("/Suppliers/Index");
             }
             catch (Exception ex)
             {
