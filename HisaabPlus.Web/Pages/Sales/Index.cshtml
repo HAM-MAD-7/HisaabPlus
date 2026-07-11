@@ -1,0 +1,42 @@
+﻿@page
+@model HisaabPlus.Web.Pages.Sales.IndexModel
+@{
+}
+@if(!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div>
+        <p style="color:red">@Model.ErrorMessage</p>
+    </div>
+}
+<div>
+    <a asp-page="/Sales/Create">Create New Sale</a>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>Sale Id</th>
+            <th>Customer Name</th>
+            <th>Payment Type</th>
+            <th>Total Amount</th>
+            <th>Paid Amount</th>
+            <th>Remaining Amount</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.Sales)
+        {
+            <tr>
+                <td>@item.SaleId</td>
+                <td>@item.CustomerName</td>
+                <td>@item.PaymentType</td>
+                <td>@item.TotalAmount</td>
+                <td>@item.PaidAmount</td>
+                <td>@item.RemainingAmount</td>
+                <td>
+                    <a asp-page="/Sales/Receipt" asp-route-saleId="@item.SaleId">View Receipt</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

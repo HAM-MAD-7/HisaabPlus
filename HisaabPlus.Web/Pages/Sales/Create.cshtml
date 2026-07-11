@@ -1,0 +1,112 @@
+﻿@page
+@model HisaabPlus.Web.Pages.Sales.CreateModel
+@{
+}
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div>
+        <p style="color:red">@Model.ErrorMessage</p>
+    </div>
+}
+<form method="post" id="salesForm">
+    <div>
+        <label asp-for="Input.CustomerId"></label>
+        <select asp-for="Input.CustomerId" asp-items="@(new SelectList(Model.Customers, "CustomerId", "FullName"))">
+            <option>Walk in Customer</option>
+        </select>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(int i = 0; i < Model.Input.Items.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <label asp-for="Input.Items[i].ProductId"></label>
+                        <select asp-for="Input.Items[i].ProductId" asp-items="@(new SelectList(Model.Products, "ProductId", "ProductName"))">
+                            <option>Select Product</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" asp-for="Input.Items[i].Quantity" value="1" min="1"/>
+                    </td>
+                    <td>
+                        <input type="text" readonly value="@(Model.Input.Items[i].ProductId > 0 ? Model.Products.FirstOrDefault(p => p.ProductId == Model.Input.Items[i].ProductId)?.SellingPrice : 0)"/>
+                    </td>
+                    <td>
+                        <input type="text" readonly value="@(Model.Input.Items[i].ProductId > 0 && Model.Input.Items[i].Quantity > 0 ? (decimal)(Model.Products.FirstOrDefault(p => p.ProductId == Model.Input.Items[i].ProductId)?.SellingPrice ?? 0) * Model.Input.Items[i].Quantity : 0)"/>
+                    </td>
+                    <td>
+                        <button type="submit" name="Action" value="RemoveItem" onclick="removeItem(@i)">Remove</button>
+                    </td>
+                </tr>            
+            }
+        </tbody>
+    </table>
+    <input type="hidden" id="RemoveIndex" name="RemoveIndex" value="0"/>
+    <button type="submit" name="Action" value="AddItem" onclick="saveFormState()">+ Add Another Item</button>
+    <div>
+         <label>Total Amount</label>
+         <input type="text" readonly value="@(Model.Input.Items.Where(i => i.ProductId > 0).Sum(i => (Model.Products.FirstOrDefault(p => p.ProductId == i.ProductId)?.SellingPrice ?? 0) * i.Quantity))"/>
+    </div>
+    <div>
+        <label asp-for="Input.PaidAmount"></label>
+        <input type="number" asp-for="Input.PaidAmount" value="0" min="0" step="0.01"/>
+    </div>
+    <div>
+        <label>Remaining Amount</label>
+        <input type="text" readonly value="@(Model.Input.Items.Where(i => i.ProductId > 0).Sum(i => (Model.Products.FirstOrDefault(p => p.ProductId == i.ProductId)?.SellingPrice ?? 0) * i.Quantity) - Model.Input.PaidAmount)"/>
+    </div>
+    <div>
+        <label asp-for="Input.PaymentType"></label>
+        <select asp-for="Input.PaymentType">
+            <option value="">Select Payment</option>
+            <option value="cash">Cash</option>
+            <option value="loan">Loan</option>
+        </select>
+    </div>
+    <div>
+        <button type="submit">Create Sale</button>
+        <a asp-page="/Sales/Index">Cancel</a>
+    </div>
+
+    <script>
+        function removeItem(index)
+        {
+            saveFormState();
+            document.getElementById('RemoveIndex').value = index;
+        }
+
+        function saveFormState()
+        {
+            const quantities = [];
+            document.querySelectorAll('input[name*="Quantity"]').forEach(input =>{
+                quantities.push(input.value);
+            });
+            localStorage.setItem('savedQuantities',JSON.stringify(quantities));
+        }
+
+        function restoreFormState()
+        {
+            const quantities = JSON.parse(localStorage.getItem('savedQuantities') || '[]');
+            document.querySelectorAll('input[name*="Quantity"]').forEach((input, index)=>{
+                if(quantities[index])
+                {
+                    input.value = quantities[index];
+                }
+            });
+            localStorage.removeItem('savedQuantities');
+        }
+
+        window.addEventListener('load', restoreFormState);
+    </script>
+</form>
