@@ -1,0 +1,52 @@
+﻿@page
+@model HisaabPlus.Web.Pages.Dashboard.ReportModel
+@{
+}
+<div>
+    <div>
+        <h1>Month</h1>
+        <p>@Model.Data.Month</p>
+    </div>
+
+    <div>
+        <h1>Year</h1>
+        <p>@Model.Data.Year</p>
+    </div>
+
+    <div>
+        <h1>Total Sales</h1>
+        <p>@Model.Data.TotalSales</p>
+    </div>
+
+    <div>
+        <h1>Total Cash Sales</h1>
+        <p>@Model.Data.TotalCashSales</p>
+    </div>
+
+    <div>
+        <h1>Total Loan Sales</h1>
+        <p>@Model.Data.TotalLoanSales</p>
+    </div>
+
+    <div>
+        <h1>Total Customer Payments</h1>
+        <p>@Model.Data.TotalCustomerPayments</p>
+    </div>
+
+    <div>
+        <h1>Monthly Estimated Profit</h1>
+        <p>@Model.Data.EstimatedProfit</p>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div>
+        <h1>Message</h1>
+        <p>@Model.ErrorMessage</p>
+    </div>
+}
+
+<div>
+    <a asp-page="/Dashboard/Index">Back to regular report</a>
+</div>

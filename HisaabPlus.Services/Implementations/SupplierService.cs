@@ -187,5 +187,56 @@ namespace HisaabPlus.Services.Implementations
             }).ToList();
             return mapSupplier;
         }
+        public async Task<List<StockPurchaseResponseDTO>> GetMonthlyPurchasesAsync(int shopId)
+        {
+            var today = DateTime.UtcNow;
+            var startDate = new DateTime(today.Year, today.Month, 1);
+            var endDate = startDate.AddMonths(1);
+            var itemsPurchases = await _db.StockPurchases.Include(i => i.StockPurchaseItems).Where(p => p.ShopId == shopId && p.PurchaseDate >= startDate && p.PurchaseDate < endDate).ToListAsync();
+            var mapItemsPurchases = itemsPurchases.Select(p => new StockPurchaseResponseDTO
+            {
+                PurchaseId = p.PurchaseId,
+                SupplierId = p.SupplierId,
+                PurchaseDate = p.PurchaseDate,
+                TotalAmount = p.TotalAmount,
+                PaidAmount = p.PaidAmount,
+                RemainingAmount = p.RemainingAmount,
+                PaymentType = p.PaymentType,
+                Items = p.StockPurchaseItems.Select(p => new StockPurchaseItemDTO
+                {
+                    ProductId = p.ProductId,
+                    Quantity = p.Quantity,
+                    UnitPrice = p.UnitPrice,
+                    TotalPrice = p.TotalPrice
+                }).ToList()
+            }).ToList();
+            return mapItemsPurchases;
+        }
+        public async Task<StockPurchaseResponseDTO> GetPurchaseByIdAsync(int purchaseId, int shopId)
+        {
+            var getPurchase = await _db.StockPurchases.Include(i => i.StockPurchaseItems).FirstOrDefaultAsync(p => p.PurchaseId == purchaseId && p.ShopId == shopId);
+            if(getPurchase == null)
+            {
+                throw new Exception("Purchase not found");
+            }
+            var mapPurchase = new StockPurchaseResponseDTO
+            {
+                PurchaseId = getPurchase.PurchaseId,
+                SupplierId = getPurchase.SupplierId,
+                PurchaseDate = getPurchase.PurchaseDate,
+                TotalAmount = getPurchase.TotalAmount,
+                PaidAmount = getPurchase.PaidAmount,
+                RemainingAmount = getPurchase.RemainingAmount,
+                PaymentType = getPurchase.PaymentType,
+                Items = getPurchase.StockPurchaseItems.Select(p => new StockPurchaseItemDTO
+                {
+                    ProductId = p.ProductId,
+                    Quantity = p.Quantity,
+                    UnitPrice = p.UnitPrice,
+                    TotalPrice = p.TotalPrice
+                }).ToList()
+            };
+            return mapPurchase;
+        }
     }
 }

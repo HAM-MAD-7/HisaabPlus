@@ -3,7 +3,7 @@ using HisaabPlus.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace HisaabPlus.Web.Pages.Dashboard
+namespace HisaabPlus.Web.Pages.StockPurchase
 {
     public class IndexModel : PageModel
     {
@@ -12,25 +12,25 @@ namespace HisaabPlus.Web.Pages.Dashboard
         {
             _apiService = apiService;
         }
-        public DashboardResponseModel Dashboard { get; set; } = new();
+        public List<StockPurchaseResponseModel> MonthlyStock { get; set; } = new();
         public string ErrorMessage { get; set; } = "";
         public async Task<IActionResult> OnGetAsync()
         {
             try
             {
-                var token = HttpContext.Session.GetString("JwtToken");
-                if (string.IsNullOrEmpty(token))
+                var getToken = HttpContext.Session.GetString("JwtToken");
+                if (getToken == null)
                 {
                     return RedirectToPage("/Auth/Login");
                 }
-                Dashboard = await _apiService.GetAsync<DashboardResponseModel>("api/dashboard/GetRegularInfo", token);
+                MonthlyStock = await _apiService.GetAsync<List<StockPurchaseResponseModel>>("api/supplier/GetMonthlyPurchases", getToken);
+                return Page();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
                 return Page();
             }
-            return Page();
         }
     }
 }

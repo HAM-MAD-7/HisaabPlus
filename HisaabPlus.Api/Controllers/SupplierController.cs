@@ -108,6 +108,32 @@ namespace HisaabPlus.Api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("GetMonthlyPurchases")]
+        public async Task<IActionResult> MonthlyPurchases()
+        {
+            try
+            {
+                var result = await _supplierService.GetMonthlyPurchasesAsync(GetShopId());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("GetOnePurchase/{purchaseId}")]
+        public async Task<IActionResult> GetSinglePurchase(int purchaseId, int shopId)
+        {
+            try
+            {
+                var result = await _supplierService.GetPurchaseByIdAsync(purchaseId,GetShopId());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         private int GetShopId()
         {
             var shopId = User.Claims.FirstOrDefault(i => i.Type == "ShopId")?.Value;

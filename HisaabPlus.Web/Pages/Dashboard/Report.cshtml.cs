@@ -5,32 +5,32 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace HisaabPlus.Web.Pages.Dashboard
 {
-    public class IndexModel : PageModel
+    public class ReportModel : PageModel
     {
         private readonly ApiService _apiService;
-        public IndexModel(ApiService apiService)
+        public ReportModel(ApiService apiService)
         {
             _apiService = apiService;
         }
-        public DashboardResponseModel Dashboard { get; set; } = new();
+        public MonthlyReportModel Data { get; set; } = new();
         public string ErrorMessage { get; set; } = "";
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int month, int year)
         {
             try
             {
-                var token = HttpContext.Session.GetString("JwtToken");
-                if (string.IsNullOrEmpty(token))
+                var getToken = HttpContext.Session.GetString("JwtToken");
+                if (getToken == null)
                 {
                     return RedirectToPage("/Auth/Login");
                 }
-                Dashboard = await _apiService.GetAsync<DashboardResponseModel>("api/dashboard/GetRegularInfo", token);
+                Data = await _apiService.GetAsync<MonthlyReportModel>($"api/dashboard/GetMonthlyInfo/{month}/{year}", getToken);
+                return Page();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorMessage = ex.Message;
                 return Page();
             }
-            return Page();
         }
     }
 }

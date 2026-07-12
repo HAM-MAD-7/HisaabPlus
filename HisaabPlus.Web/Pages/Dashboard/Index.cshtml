@@ -1,8 +1,8 @@
 ﻿@page
 @model HisaabPlus.Web.Pages.Dashboard.IndexModel
 @{
+    var today = DateTime.UtcNow;
 }
-
 <div>
     <div>
         <h1>Today's Date</h1>
@@ -55,3 +55,7 @@
         <p>@Model.ErrorMessage</p>
     </div>
 }
+
+<div>
+    <a asp-page="/Dashboard/Report" asp-route-month="@today.Month" asp-route-year="@today.Year">View Monthly Report</a>
+</div>

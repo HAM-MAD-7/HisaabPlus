@@ -14,5 +14,7 @@ namespace HisaabPlus.Services.Interfaces
         Task<bool> RecordStockPurchaseAsync(StockPurchaseDTO stockPurchaseDTO, int shopId, int userId);
         Task<bool> RecordSupplierPaymentAsync(SupplierPaymentDTO supplierPaymentDTO, int shopId, int userId);
         Task<List<SupplierDTO>> GetSuppliersWithBalanceAsync(int shopId);
+        Task<List<StockPurchaseResponseDTO>> GetMonthlyPurchasesAsync(int shopId);
+        Task<StockPurchaseResponseDTO> GetPurchaseByIdAsync(int purchaseId, int shopId);
     }
 }
