@@ -2,3 +2,26 @@
 @model HisaabPlus.Web.Pages.StockPurchase.RecordPaymentModel
 @{
 }
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div>
+        <p style="color:red">@Model.ErrorMessage</p>
+    </div>
+}
+<form method="post">
+    <div>
+        <label asp-for="Input.Amount"></label>
+        <input asp-for="Input.Amount"/>
+        <span asp-validation-for="Input.Amount"></span>
+    </div>
+    <div>
+        <label asp-for="Input.Notes"></label>
+        <input asp-for="Input.Notes" />
+        <span asp-validation-for="Input.Notes"></span>
+    </div>
+    <div>
+        <input type="hidden" asp-for="Input.SupplierId"/>
+        <button type="submit">Submit</button>
+        <a asp-page="/Suppliers/Detail" asp-route-supplierId="@Model.Input.SupplierId">Cancel</a>
+    </div>
+</form>

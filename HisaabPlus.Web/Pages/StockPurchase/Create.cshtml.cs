@@ -80,8 +80,8 @@ namespace HisaabPlus.Web.Pages.StockPurchase
                     ErrorMessage = "Pls add atleast one product";
                     return Page();
                 }
-                var response = await _apiService.PostAsync<StockPurchaseResponseModel>("api/supplier/StockPurchase", Input ,getToken);
-                return RedirectToPage("/StockPurchase/Receipt", new {purchaseId = response.PurchaseId});
+                await _apiService.PostAsync<bool>("api/supplier/StockPurchase", Input ,getToken);
+                return RedirectToPage("/StockPurchase/Index");
             }
             catch(Exception ex)
             {

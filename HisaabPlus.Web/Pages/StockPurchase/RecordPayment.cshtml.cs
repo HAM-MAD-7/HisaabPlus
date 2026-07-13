@@ -39,7 +39,7 @@ namespace HisaabPlus.Web.Pages.StockPurchase
                     ErrorMessage = "Pls enter a valid amount!";
                     return Page();
                 }
-                await _apiService.PostAsync<SupplierPaymentInputModel>("api/supplier/StockPayment", Input, getToken);
+                await _apiService.PostAsync<bool>("api/supplier/StockPayment", Input, getToken);
                 return RedirectToPage("/Suppliers/Detail", new { supplierId = Input.SupplierId });
             }
             catch (Exception ex)

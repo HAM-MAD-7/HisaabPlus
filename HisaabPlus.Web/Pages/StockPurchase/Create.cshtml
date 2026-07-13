@@ -2,3 +2,88 @@
 @model HisaabPlus.Web.Pages.StockPurchase.CreateModel
 @{
 }
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div>
+        <p style="color:red">@Model.ErrorMessage</p>
+    </div>
+}
+<form method="post" id="purchaseForm">
+    <div>
+        <select asp-for="Input.SupplierId" asp-items="@(new SelectList(Model.Suppliers, "SupplierId", "SupplierName"))">
+            <option>Suppliers</option>
+        </select>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(int i = 0; i < Model.Input.Items.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <select asp-for="Input.Items[i].ProductId" asp-items="@(new SelectList(Model.Products, "ProductId", "ProductName"))">
+                            <option>Products</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input asp-for="Input.Items[i].Quantity" />
+                    </td>
+                    <td>
+                        <input asp-for="Input.Items[i].UnitPrice" />
+                    </td>
+                    <td>
+                        <input type="text" readonly value="@(Model.Input.Items[i].Quantity * Model.Input.Items[i].UnitPrice)" />
+                        <input type="hidden" asp-for="Input.Items[i].TotalPrice" value="@(Model.Input.Items[i].Quantity * Model.Input.Items[i].UnitPrice)" />
+                    </td>
+                    <td>
+                        <button type="submit" name="Action" value="RemoveStock" onclick="removeItem(@i)">Remove</button>
+                    </td>
+                </tr>    
+            }
+        </tbody>
+    </table>
+    <input type="hidden" id="RemoveIndex" name="RemoveIndex" value="0"/>
+    <button type="submit" name="Action" value="AddStock">+ Add another item</button>
+    <div>
+        <h1>Payment Details</h1>
+    </div>
+    <div>
+        <label>Total Amount</label>
+        <input readonly value="@(Model.Input.Items.Where(p => p.ProductId > 0).Sum(i => i.Quantity * i.UnitPrice))" />
+    </div>
+    <div>
+        <label>Paid Amount</label>
+        <input type="number" asp-for="Input.PaidAmount" />
+    </div>
+    <div>
+        <label>Remaining Amount</label>
+        <input readonly value="@(Model.Input.Items.Where(p => p.ProductId > 0).Sum(i => i.Quantity * i.UnitPrice) - Model.Input.PaidAmount)" />
+    </div>
+    <div>
+        <label>Payment Type</label>
+        <select asp-for="Input.PaymentType">
+            <option value="">Select Payment</option>
+            <option value="cash">Cash</option>
+            <option value="credit">Credit</option>
+        </select>
+    </div>
+    <div>
+        <button type="submit">Create Purchase</button>
+        <a asp-page="/StockPurchase/Index">Cancel</a>
+    </div>
+</form>
+<script>
+    function removeItem(index)
+    {
+        document.getElementById("RemoveIndex").value = index;
+        document.getElementById("purchaseForm").submit();
+    }
+</script>

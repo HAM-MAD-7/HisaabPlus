@@ -2,3 +2,55 @@
 @model HisaabPlus.Web.Pages.StockPurchase.ReceiptModel
 @{
 }
+<div>
+    <h1>Purchase Info</h1>
+    <label>Purchase Id</label>
+    <p>@Model.StockPurchase.PurchaseId</p>
+    <label>Supplier Id</label>
+    <p>@Model.StockPurchase.SupplierId</p>
+    <label>Supplier Name</label>
+    <p>@Model.StockPurchase.SupplierName</p>
+    <label>Purchase Date</label>
+    <p>@Model.StockPurchase.PurchaseDate</p>
+</div>
+<br />
+<div>
+    <h1>Product Record</h1>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.StockPurchase.Items)
+        {
+            <tr>
+                <td>@item.ProductName</td>
+                <td>@item.Quantity</td>
+                <td>@item.UnitPrice</td>
+                <td>@item.TotalPrice</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+<div>
+    <h1>Purchase Summary</h1>
+    <label>Total Amount</label>
+    <p>@Model.StockPurchase.TotalAmount</p>
+    <label>Paid Amount</label>
+    <p>@Model.StockPurchase.PaidAmount</p>
+    <label>Remaining Amount</label>
+    <p>@Model.StockPurchase.RemainingAmount</p>
+    <label>Payment Type</label>
+    <p>@Model.StockPurchase.PaymentType</p>
+</div>
+<br />
+<div>
+    <a asp-page="/StockPurchase/Index">Back to purchases</a>
+</div>

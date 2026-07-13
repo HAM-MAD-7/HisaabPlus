@@ -110,15 +110,16 @@ namespace HisaabPlus.Services.Implementations
             {
                 throw new Exception("Supplier Not Found!");
             }
+            decimal totalAmount = stockPurchaseDTO.Items.Sum(p => p.Quantity * p.UnitPrice);
             var stockPurchase = new StockPurchase
             {
                 ShopId = shopId,
                 SupplierId = stockPurchaseDTO.SupplierId,
                 PurchaseDate = DateTime.UtcNow,
-                TotalAmount = stockPurchaseDTO.TotalAmount,
+                TotalAmount = totalAmount,
                 PaymentType = stockPurchaseDTO.PaymentType,
                 PaidAmount = stockPurchaseDTO.PaidAmount,
-                RemainingAmount = stockPurchaseDTO.TotalAmount - stockPurchaseDTO.PaidAmount,
+                RemainingAmount = totalAmount - stockPurchaseDTO.PaidAmount,
                 CreatedBy = userId
             };
             await _db.StockPurchases.AddAsync(stockPurchase);
@@ -192,11 +193,12 @@ namespace HisaabPlus.Services.Implementations
             var today = DateTime.UtcNow;
             var startDate = new DateTime(today.Year, today.Month, 1);
             var endDate = startDate.AddMonths(1);
-            var itemsPurchases = await _db.StockPurchases.Include(i => i.StockPurchaseItems).Where(p => p.ShopId == shopId && p.PurchaseDate >= startDate && p.PurchaseDate < endDate).ToListAsync();
+            var itemsPurchases = await _db.StockPurchases.Include(i => i.StockPurchaseItems).Include(l => l.Supplier).Where(p => p.ShopId == shopId && p.PurchaseDate >= startDate && p.PurchaseDate < endDate).ToListAsync();
             var mapItemsPurchases = itemsPurchases.Select(p => new StockPurchaseResponseDTO
             {
                 PurchaseId = p.PurchaseId,
                 SupplierId = p.SupplierId,
+                SupplierName = p.Supplier.SupplierName,
                 PurchaseDate = p.PurchaseDate,
                 TotalAmount = p.TotalAmount,
                 PaidAmount = p.PaidAmount,
@@ -214,7 +216,7 @@ namespace HisaabPlus.Services.Implementations
         }
         public async Task<StockPurchaseResponseDTO> GetPurchaseByIdAsync(int purchaseId, int shopId)
         {
-            var getPurchase = await _db.StockPurchases.Include(i => i.StockPurchaseItems).FirstOrDefaultAsync(p => p.PurchaseId == purchaseId && p.ShopId == shopId);
+            var getPurchase = await _db.StockPurchases.Include(i => i.StockPurchaseItems).ThenInclude(v => v.Product).Include(k => k.Supplier).FirstOrDefaultAsync(p => p.PurchaseId == purchaseId && p.ShopId == shopId);
             if(getPurchase == null)
             {
                 throw new Exception("Purchase not found");
@@ -223,6 +225,7 @@ namespace HisaabPlus.Services.Implementations
             {
                 PurchaseId = getPurchase.PurchaseId,
                 SupplierId = getPurchase.SupplierId,
+                SupplierName = getPurchase.Supplier.SupplierName,
                 PurchaseDate = getPurchase.PurchaseDate,
                 TotalAmount = getPurchase.TotalAmount,
                 PaidAmount = getPurchase.PaidAmount,
@@ -231,6 +234,7 @@ namespace HisaabPlus.Services.Implementations
                 Items = getPurchase.StockPurchaseItems.Select(p => new StockPurchaseItemDTO
                 {
                     ProductId = p.ProductId,
+                    ProductName = p.Product.ProductName,
                     Quantity = p.Quantity,
                     UnitPrice = p.UnitPrice,
                     TotalPrice = p.TotalPrice
