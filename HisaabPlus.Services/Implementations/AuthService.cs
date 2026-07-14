@@ -107,7 +107,7 @@ namespace HisaabPlus.Services.Implementations
             var generatedToken = _jwtService.GenerateToken(0, 0, "Admin", "AdminPanel");
             return new AuthResponseDTO
             {
-                Token =generatedToken,
+                Token = generatedToken,
                 ShopId = 0,
                 ShopName = "AdminPanel",
                 OwnerName = username,
