@@ -2,3 +2,68 @@
 @model HisaabPlus.Web.Pages.Admin.IndexModel
 @{
 }
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div>
+        <p style="color:red">@Model.ErrorMessage</p>
+    </div>
+}
+<div>
+    <a asp-page="/Admin/RegisterShop">Register new shop</a>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>Shop Name</th>
+            <th>Owner Name</th>
+            <th>Phone Number</th>
+            <th>Status</th>
+            <th>Subscription End Date</th>
+            <th>Days Remaining</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var items in Model.Shops)
+        {
+            <tr>
+                <td>@items.ShopName</td>
+                <td>@items.OwnerName</td>
+                <td>@items.PhoneNumber</td>
+                <td>
+                    @if(items.IsActive)
+                    {
+                        <span style="color:limegreen">Active</span>
+                    }
+                    else
+                    {
+                        <span style="color:red">Locked</span>
+                    }
+                </td>
+                <td>@items.SubscriptionEndDate</td>
+                <td>@items.DaysRemaining</td>
+                <td>
+                    @if(items.IsActive == true)
+                    {
+                        <form method="post" style="display:inline">
+                            <button type="submit" asp-page-handler="Lock" asp-route-shopId="@items.ShopId">Lock shop</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form method="post" style="display:inline">
+                            <button type="submit" asp-page-handler="Unlock" asp-route-shopId="@items.ShopId">Unlock shop</button>
+                        </form>
+                    }
+                    <a asp-page="/Admin/AddSubscription" asp-route-shopId="@items.ShopId">Add Subscription</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@if(Model.Shops.Count == 0)
+{
+    <div>
+        <p style="color:red">No shops found!</p>
+    </div>
+}

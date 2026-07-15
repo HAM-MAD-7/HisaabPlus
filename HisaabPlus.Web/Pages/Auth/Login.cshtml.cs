@@ -23,6 +23,7 @@ namespace HisaabPlus.Web.Pages.Auth
                 HttpContext.Session.SetString("JwtToken", response.Token);
                 HttpContext.Session.SetString("ShopName", response.ShopName);
                 HttpContext.Session.SetString("ShopId", response.ShopId.ToString());
+                HttpContext.Session.SetString("Role", response.Role);
                 HttpContext.Session.SetString("OwnerName", response.OwnerName);
                 return RedirectToPage("/Dashboard/Index");
             }

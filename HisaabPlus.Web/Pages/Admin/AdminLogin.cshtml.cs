@@ -43,6 +43,7 @@ namespace HisaabPlus.Web.Pages.Admin
             {
                 var response = await _apiService.PostAsync<AuthResponseModel>("api/auth/admin-login", Input, "");
                 HttpContext.Session.SetString("JwtAdminToken", response.Token);
+                HttpContext.Session.SetString("Role", response.Role);
                 return RedirectToPage("/Admin/Index");
             }
             catch(Exception ex)

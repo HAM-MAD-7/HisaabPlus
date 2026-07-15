@@ -2,3 +2,52 @@
 @model HisaabPlus.Web.Pages.Admin.RegisterShopModel
 @{
 }
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div>
+        <p style="color:red">@Model.ErrorMessage</p>
+    </div>
+}
+<form method="post" asp-antiforgery="true">
+    @Html.AntiForgeryToken()
+    <div>
+        <label asp-for="Input.ShopName"></label>
+        <input asp-for="Input.ShopName"/>
+        <span asp-validation-for="Input.ShopName"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.OwnerName"></label>
+        <input asp-for="Input.OwnerName" />
+        <span asp-validation-for="Input.OwnerName"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.PhoneNumber"></label>
+        <input asp-for="Input.PhoneNumber" />
+        <span asp-validation-for="Input.PhoneNumber"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.Address"></label>
+        <input asp-for="Input.Address" />
+        <span asp-validation-for="Input.Address"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.Email"></label>
+        <input asp-for="Input.Email" />
+        <span asp-validation-for="Input.Email"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.Password"></label>
+        <input type="password" asp-for="Input.Password" />
+        <span asp-validation-for="Input.Password"></span>
+    </div>
+
+    <div>
+        <button type="submit">Submit</button>
+        <a asp-page="/Admin/Index">Cancel</a>
+    </div>
+</form>

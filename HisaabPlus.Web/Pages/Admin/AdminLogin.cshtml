@@ -2,3 +2,27 @@
 @model HisaabPlus.Web.Pages.Admin.AdminLoginModel
 @{
 }
+@if(!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div>
+        <p style="color:red">@Model.ErrorMessage</p>
+    </div>
+}
+<form method="post" asp-antiforgery="true">
+    @Html.AntiForgeryToken()
+    <div>
+        <label asp-for="Input.UserName"></label>
+        <input asp-for="Input.UserName"/>
+        <span asp-validation-for="Input.UserName"></span>
+    </div>
+
+    <div>
+        <label asp-for="Input.Password"></label>
+        <input type="password" asp-for="Input.Password" />
+        <span asp-validation-for="Input.Password"></span>
+    </div>
+    
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+</form>
