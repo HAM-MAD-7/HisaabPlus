@@ -15,8 +15,30 @@ namespace HisaabPlus.Web.Pages.Auth
         [BindProperty]
         public Models.LoginInputModel Input { get; set; } = new();
         public string ErrorMessage { get; set; } = "";
+        public IActionResult OnGet()
+        {
+            var getToken = HttpContext.Session.GetString("JwtToken");
+            try
+            {
+                if (getToken != null)
+                {
+                    return RedirectToPage("/Dashboard/Index");
+                }
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                return Page();
+            }
+        }
         public async Task<IActionResult> OnPostAsync()
         {
+            if(!ModelState.IsValid)
+            {
+                ErrorMessage = "Phone and Password are required!";
+                return Page();
+            }
             try
             {
                 var response = await _apiService.PostAsync<AuthResponseModel>("api/auth/login", Input, "");
@@ -27,9 +49,9 @@ namespace HisaabPlus.Web.Pages.Auth
                 HttpContext.Session.SetString("OwnerName", response.OwnerName);
                 return RedirectToPage("/Dashboard/Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Invalid phone or password. Try again.";
                 return Page();
             }
         }

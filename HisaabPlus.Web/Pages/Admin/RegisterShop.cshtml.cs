@@ -49,9 +49,9 @@ namespace HisaabPlus.Web.Pages.Admin
                 await _apiService.PostAsync<AuthResponseModel>("api/auth/register", Input, getToken);
                 return RedirectToPage("/Admin/Index");
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Feilds are invalid!";
                 return Page();
             }
         }

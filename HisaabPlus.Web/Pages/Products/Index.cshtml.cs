@@ -12,7 +12,7 @@ namespace HisaabPlus.Web.Pages.Products
         {
             _apiService = apiService;
         }
-        public List<ProductResponseModel> productResponses { get; set; } = new();
+        public List<ProductResponseModel> Products { get; set; } = new();
         public string? ErrorMessage { get; set; }
         public async Task<IActionResult> OnGetAsync()
         {
@@ -23,11 +23,11 @@ namespace HisaabPlus.Web.Pages.Products
                 {
                     return RedirectToPage("/Auth/Login");
                 }
-                productResponses = await _apiService.GetAsync<List<ProductResponseModel>>("api/product/GetAllProducts",getToken);
+                Products = await _apiService.GetAsync<List<ProductResponseModel>>("api/product/GetAllProducts",getToken);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to load products. Try again.";
                 return Page();
             }
             return Page();
@@ -44,9 +44,9 @@ namespace HisaabPlus.Web.Pages.Products
                 await _apiService.DeleteAsync($"api/product/DeleteProduct/{productId}", getToken);
                 return RedirectToPage("/Products/Index");
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to delete product. Try again.";
                 return Page();
             }
         }

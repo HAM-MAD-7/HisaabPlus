@@ -36,14 +36,19 @@ namespace HisaabPlus.Web.Pages.StockPurchase
                 }
                 return Page();
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to load suppliers and products. Try again.";
                 return Page();
             }
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            if(!ModelState.IsValid)
+            {
+                ErrorMessage = "Pls fill all feilds!";
+                return Page();
+            }
             try
             {
                 var getToken = HttpContext.Session.GetString("JwtToken");
@@ -80,12 +85,17 @@ namespace HisaabPlus.Web.Pages.StockPurchase
                     ErrorMessage = "Pls add atleast one product";
                     return Page();
                 }
+                if (string.IsNullOrEmpty(Input.PaymentType))
+                {
+                    ErrorMessage = "Please select a payment type!";
+                    return Page();
+                }
                 await _apiService.PostAsync<bool>("api/supplier/StockPurchase", Input ,getToken);
                 return RedirectToPage("/StockPurchase/Index");
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to create stock purchase. Try again.";
                 return Page();
             }
         }

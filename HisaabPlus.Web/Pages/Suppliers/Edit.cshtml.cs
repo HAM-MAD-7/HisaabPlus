@@ -27,14 +27,19 @@ namespace HisaabPlus.Web.Pages.Suppliers
                 Input = await _apiService.GetAsync<SupplierResponseModel>($"api/supplier/GetOneSupplier/{supplierId}", getToken);
                 return Page();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to load supplier. Try again.";
                 return Page();
             }
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            if(!ModelState.IsValid)
+            {
+                ErrorMessage = "Failed to edit empty feild. Try again.";
+                return Page();
+            }    
             try
             {
                 var getToken = HttpContext.Session.GetString("JwtToken");
@@ -45,9 +50,9 @@ namespace HisaabPlus.Web.Pages.Suppliers
                 await _apiService.PutAsync<bool>($"api/supplier/UpdateSupplier/{Input.SupplierId}",Input, getToken);
                 return RedirectToPage("/Suppliers/Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to edit supplier. Try again.";
                 return Page();
             }
         }

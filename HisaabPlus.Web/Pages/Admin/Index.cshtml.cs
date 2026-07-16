@@ -26,9 +26,9 @@ namespace HisaabPlus.Web.Pages.Admin
                 Shops = await _apiService.GetAsync<List<ShopModel>>("api/admin/shops", getToken);
                 return Page();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to load shops. Try again!";
                 return Page();
             }
         }
@@ -44,9 +44,9 @@ namespace HisaabPlus.Web.Pages.Admin
                 await _apiService.PutAsync<bool>($"api/admin/lock/{shopId}", null, getToken);
                 return RedirectToPage("/Admin/Index");
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to Lock shop!";
                 return Page();
             }
         }
@@ -62,9 +62,9 @@ namespace HisaabPlus.Web.Pages.Admin
                 await _apiService.PutAsync<bool>($"api/admin/unlock/{shopId}", null, getToken);
                 return RedirectToPage("/Admin/Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to Unlock shop!";
                 return Page();
             }
         }

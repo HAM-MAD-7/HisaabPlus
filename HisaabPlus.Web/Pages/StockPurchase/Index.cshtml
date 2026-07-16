@@ -11,36 +11,45 @@
 <div>
     <a asp-page="/StockPurchase/Create">Record New Purchase</a>
 </div>
-<table>
-    <thead>
-        <tr>
-            <th>Purchase Id</th>
-            <th>Supplier Id</th>
-            <th>Supplier Name</th>
-            <th>Purchase Date</th>
-            <th>Total Amount</th>
-            <th>Paid Amount</th>
-            <th>Remaining Amount</th>
-            <th>Payment Type</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var item in Model.MonthlyStock)
-        {
+@if(Model.MonthlyStock != null && Model.MonthlyStock.Count > 0)
+{
+    <table>
+        <thead>
             <tr>
-                <td>@item.PurchaseId</td>
-                <td>@item.SupplierId</td>
-                <td>@item.SupplierName</td>
-                <td>@item.PurchaseDate</td>
-                <td>@item.TotalAmount</td>
-                <td>@item.PaidAmount</td>
-                <td>@item.RemainingAmount</td>
-                <td>@item.PaymentType</td>
-                <td>
-                    <a asp-page="/StockPurchase/Receipt" asp-route-purchaseId="@item.PurchaseId">View Receipt</a>
-                </td>
+                <th>Purchase Id</th>
+                <th>Supplier Id</th>
+                <th>Supplier Name</th>
+                <th>Purchase Date</th>
+                <th>Total Amount</th>
+                <th>Paid Amount</th>
+                <th>Remaining Amount</th>
+                <th>Payment Type</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.MonthlyStock)
+            {
+                <tr>
+                    <td>@item.PurchaseId</td>
+                    <td>@item.SupplierId</td>
+                    <td>@item.SupplierName</td>
+                    <td>@item.PurchaseDate.ToShortDateString()</td>
+                    <td>@item.TotalAmount</td>
+                    <td>@item.PaidAmount</td>
+                    <td>@item.RemainingAmount</td>
+                    <td>@item.PaymentType</td>
+                    <td>
+                        <a asp-page="/StockPurchase/Receipt" asp-route-purchaseId="@item.PurchaseId">View Receipt</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>
+        <p>No monthly stock record found.</p>
+    </div>
+}

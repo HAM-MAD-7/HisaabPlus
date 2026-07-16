@@ -26,9 +26,9 @@ namespace HisaabPlus.Web.Pages.Sales
                 Sale = await _apiService.GetAsync<SaleResponseModel>($"api/SalesService/getOneSale/{saleId}", getToken);
                 return Page();
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to load sale record. Try again.";
                 return Page();
             }
         }

@@ -27,6 +27,11 @@ namespace HisaabPlus.Web.Pages.StockPurchase
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!ModelState.IsValid)
+            {
+                ErrorMessage = "Pls fill all feilds!";
+                return Page();
+            }
             try
             {
                 var getToken = HttpContext.Session.GetString("JwtToken");
@@ -42,9 +47,9 @@ namespace HisaabPlus.Web.Pages.StockPurchase
                 await _apiService.PostAsync<bool>("api/supplier/StockPayment", Input, getToken);
                 return RedirectToPage("/Suppliers/Detail", new { supplierId = Input.SupplierId });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to add record payment. Try again.";
                 return Page();
             }
         }

@@ -2,6 +2,9 @@
 @model HisaabPlus.Web.Pages.Suppliers.AddModel
 @{
 }
+<div>
+    <h1>Add Supplier</h1>
+</div>
 @if (!string.IsNullOrEmpty(Model.ErrorMessage))
 {
     <div>
@@ -9,7 +12,8 @@
     </div>
 }
 
-<form method="post">
+<form method="post" asp-antiforgery="true">
+    @Html.AntiForgeryToken();
     <div>
         <label asp-for="Input.SupplierName"></label>
         <input asp-for="Input.SupplierName"/>
@@ -18,7 +22,7 @@
 
     <div>
         <label asp-for="Input.PhoneNumber"></label>
-        <input asp-for="Input.PhoneNumber" />
+        <input type="tel" asp-for="Input.PhoneNumber" />
         <span asp-validation-for="Input.PhoneNumber"></span>
     </div>
 
@@ -30,9 +34,6 @@
 
     <div>
         <button type="submit">Submit</button>
-    </div>
-
-    <div>
         <a asp-page="/Suppliers/Index">Cancel</a>
     </div>
 </form>

@@ -26,9 +26,9 @@ namespace HisaabPlus.Web.Pages.Suppliers
                 Suppliers = await _apiService.GetAsync<List<SupplierResponseModel>>("api/supplier/GetAllSupplier", getToken);
                 return Page();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to load suppliers. Try again.";
                 return Page();
             }
         }

@@ -26,6 +26,11 @@ namespace HisaabPlus.Web.Pages.Customers
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!ModelState.IsValid)
+            {
+                ErrorMessage = "Pls fill all feilds!";
+                return Page();
+            }
             try
             {
                 var getToken = HttpContext.Session.GetString("JwtToken");
@@ -36,9 +41,9 @@ namespace HisaabPlus.Web.Pages.Customers
                 Input = await _apiService.PostAsync<CustomerResponseModel>("api/customer/AddCustomer", Input, getToken);
                 return RedirectToPage("/Customers/Index");
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to add customer. Try again.";
                 return Page();
             }
         }

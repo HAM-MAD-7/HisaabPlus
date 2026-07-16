@@ -10,70 +10,88 @@
 }
 <div>
     <h1>Supplier Info</h1>
-    <p>@Model.SupplierDetail.SupplierId</p>
-    <p>@Model.SupplierDetail.SupplierName</p>
-    <p>@Model.SupplierDetail.PhoneNumber</p>
-    <p>@Model.SupplierDetail.CompanyName</p>
+    <p><strong>Supplier Id:</strong> @Model.SupplierDetail.SupplierId</p>
+    <p><strong>Supplier Name:</strong> @Model.SupplierDetail.SupplierName</p>
+    <p><strong>Phone:</strong> @Model.SupplierDetail.PhoneNumber</p>
+    <p><strong>Company Name:</strong> @Model.SupplierDetail.CompanyName</p>
     <div>
         <label>Total Balance</label>
         @if (Model.SupplierDetail.TotalBalance > 0)
         {
-            <p style="color:red">@Model.SupplierDetail.TotalBalance</p>
+            <p style="color:red"><strong>@Model.SupplierDetail.TotalBalance</strong></p>
         }
         else
         {
-            <p>@Model.SupplierDetail.TotalBalance</p>
+            <p><strong>@Model.SupplierDetail.TotalBalance</strong></p>
         }
     </div>
 </div>
 <h1>Purchase History Record</h1>
-<table>
-    <thead>
-        <tr>
-            <th>Purchase Id</th>
-            <th>Purchase Date</th>
-            <th>Total Amount</th>
-            <th>Paid Amount</th>
-            <th>Remaining Amount</th>
-            <th>Payment Type</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var item in Model.SupplierDetail.PurchaseHistory)
-        {
+@if(Model.SupplierDetail.PurchaseHistory != null && Model.SupplierDetail.PurchaseHistory.Count > 0)
+{
+    <table>
+        <thead>
             <tr>
-                <td>@item.PurchaseId</td>
-                <td>@item.PurchaseDate</td>
-                <td>@item.TotalAmount</td>
-                <td>@item.PaidAmount</td>
-                <td>@item.RemainingAmount</td>
-                <td>@item.PaymentType</td>
+                <th>Purchase Id</th>
+                <th>Purchase Date</th>
+                <th>Total Amount</th>
+                <th>Paid Amount</th>
+                <th>Remaining Amount</th>
+                <th>Payment Type</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.SupplierDetail.PurchaseHistory)
+            {
+                <tr>
+                    <td>@item.PurchaseId</td>
+                    <td>@item.PurchaseDate</td>
+                    <td>@item.TotalAmount</td>
+                    <td>@item.PaidAmount</td>
+                    <td>@item.RemainingAmount</td>
+                    <td>@item.PaymentType</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>
+        <p>No purchase history record found.</p>
+    </div>
+}
 <h1>Payment History Record</h1>
-<table>
-    <thead>
-        <tr>
-            <th>Payment Id</th>
-            <th>Amount</th>
-            <th>Payment Date</th>
-            <th>Notes</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var item in Model.SupplierDetail.PaymentHistory)
-        {
+@if(Model.SupplierDetail.PaymentHistory != null && Model.SupplierDetail.PaymentHistory.Count > 0)
+{
+    <table>
+        <thead>
             <tr>
-                <td>@item.PaymentId</td>
-                <td>@item.Amount</td>
-                <td>@item.PaymentDate</td>
-                <td>@item.Notes</td>
+                <th>Payment Id</th>
+                <th>Amount</th>
+                <th>Payment Date</th>
+                <th>Notes</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.SupplierDetail.PaymentHistory)
+            {
+                <tr>
+                    <td>@item.PaymentId</td>
+                    <td>@item.Amount</td>
+                    <td>@item.PaymentDate</td>
+                    <td>@item.Notes</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>
+        <p>No payment history record found.</p>
+    </div>
+}
 <div>
     <a asp-page="/StockPurchase/Create" asp-route-supplierId="@Model.SupplierDetail.SupplierId">Record Stock Purchase</a>
     <br />

@@ -10,38 +10,47 @@
 }
 <div>
     <h1>Sale Info</h1>
-    <p>@Model.Sale.SaleId</p>
-    <p>@Model.Sale.SaleDate</p>
-    <p>@Model.Sale.CustomerName</p>
+    <p><strong>Sale Id:</strong> @Model.Sale.SaleId</p>
+    <p><strong>Sale Date:</strong> @Model.Sale.SaleDate</p>
+    <p><strong>Customer Name:</strong> @Model.Sale.CustomerName</p>
 </div>
-<table>
-    <thead>
-        <tr>
-            <th>Product Name</th>
-            <th>Quantity</th>
-            <th>Unit Price</th>
-            <th>Total Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var item in Model.Sale.Items)
-        {
+@if (Model.Sale.Items != null && Model.Sale.Items.Count > 0)
+{
+    <table>
+        <thead>
             <tr>
-                <td>@item.ProductName</td>
-                <td>@item.Quantity</td>
-                <td>@item.UnitPrice</td>
-                <td>@item.TotalPrice</td>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Sale.Items)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.UnitPrice</td>
+                    <td>@item.TotalPrice</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>
+        <p>No receipt found.</p>
+    </div>
+}
 <br />
 <div>
     <h1>Sale Summary</h1>
-    <p>@Model.Sale.TotalAmount</p>
-    <p>@Model.Sale.PaidAmount</p>
-    <p>@Model.Sale.RemainingAmount</p>
-    <p>@Model.Sale.PaymentType</p>
+    <p><strong>Total Amount:</strong> @Model.Sale.TotalAmount</p>
+    <p><strong>Paid Amount:</strong> @Model.Sale.PaidAmount</p>
+    <p><strong>Remaining Amount:</strong> @Model.Sale.RemainingAmount</p>
+    <p><strong>Payment Type:</strong> @Model.Sale.PaymentType</p>
 </div>
 <br />
 <div>

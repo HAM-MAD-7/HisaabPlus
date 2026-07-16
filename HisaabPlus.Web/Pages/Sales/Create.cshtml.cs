@@ -36,14 +36,19 @@ namespace HisaabPlus.Web.Pages.Sales
                 }
                 return Page();
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to load products or customers. Try again.";
                 return Page();
             }
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            if(!ModelState.IsValid)
+            {
+                ErrorMessage = "Pls fill all required feilds!";
+                return Page();
+            }
             try
             {
                 var getToken = HttpContext.Session.GetString("JwtToken");
@@ -69,6 +74,11 @@ namespace HisaabPlus.Web.Pages.Sales
                     }
                     return Page();
                 }
+                if (Input.Items.Count == 0)
+                {
+                    ErrorMessage = "Pls add atleast one product";
+                    return Page();
+                }
                 if (string.IsNullOrEmpty(Input.PaymentType))
                 {
                     ErrorMessage = "Please select a payment type!";
@@ -83,9 +93,9 @@ namespace HisaabPlus.Web.Pages.Sales
                 var response = await _apiService.PostAsync<SaleResponseModel>("api/SalesService/AddSale", Input, getToken);
                 return RedirectToPage("/Sales/Receipt", new { saleId = response.SaleId });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to create sale. Try again.";
                 return Page();
             }
         }

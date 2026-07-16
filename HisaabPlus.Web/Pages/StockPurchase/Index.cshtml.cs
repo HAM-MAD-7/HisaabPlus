@@ -26,9 +26,9 @@ namespace HisaabPlus.Web.Pages.StockPurchase
                 MonthlyStock = await _apiService.GetAsync<List<StockPurchaseResponseModel>>("api/supplier/GetMonthlyPurchases", getToken);
                 return Page();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to load monthly stock record. Try again.";
                 return Page();
             }
         }

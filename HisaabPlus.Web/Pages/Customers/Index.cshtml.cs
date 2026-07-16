@@ -27,7 +27,7 @@ namespace HisaabPlus.Web.Pages.Customers
             }
             catch(Exception ex)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to load customers. Try again";
                 return Page();
             }
             return Page();

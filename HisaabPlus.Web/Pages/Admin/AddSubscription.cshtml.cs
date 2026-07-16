@@ -51,9 +51,9 @@ namespace HisaabPlus.Web.Pages.Admin
                 await _apiService.PostAsync<bool>($"api/admin/subscription/{shopId}/{months}", null, getToken);
                 return RedirectToPage("/Admin/Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to add subscription. Try again!";
                 return Page();
             }
         }

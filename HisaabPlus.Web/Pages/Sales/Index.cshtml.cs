@@ -26,9 +26,9 @@ namespace HisaabPlus.Web.Pages.Sales
                 Sales = await _apiService.GetAsync<List<SaleResponseModel>>("api/SalesService/getSales/today", getToken);
                 return Page();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to load today's sale record. Try again.";
                 return Page();
             }
         }

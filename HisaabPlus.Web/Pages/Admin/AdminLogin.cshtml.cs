@@ -46,9 +46,9 @@ namespace HisaabPlus.Web.Pages.Admin
                 HttpContext.Session.SetString("Role", response.Role);
                 return RedirectToPage("/Admin/Index");
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Invalid admin credentials. Try again.";
                 return Page();
             }
         }

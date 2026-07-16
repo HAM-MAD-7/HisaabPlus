@@ -26,9 +26,9 @@ namespace HisaabPlus.Web.Pages.Customers
                 Customer = await _apiService.GetAsync<CustomerDetailResponseModel>($"api/customer/GetOneCustomer/{customerId}", getToken);
                 return Page();
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to load detail of customer. Try again.";
                 return Page();
             }
         }

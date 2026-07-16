@@ -26,9 +26,9 @@ namespace HisaabPlus.Web.Pages.StockPurchase
                 StockPurchase = await _apiService.GetAsync<StockPurchaseResponseModel>($"api/supplier/GetOnePurchase/{purchaseId}", getToken);
                 return Page();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to load stock purchase receipt. Try again.";
                 return Page();
             }
         }

@@ -26,6 +26,41 @@ namespace HisaabPlus.Web.Pages.Products
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!ModelState.IsValid)
+            {
+                ErrorMessage = "Pls fill all required feilds!";
+                return Page();
+            }
+            if (Input.PurchasePrice <= 0)
+            {
+                ErrorMessage = "Purchase price is not valid!";
+                return Page();
+            }
+            if (Input.SellingPrice <= 0)
+            {
+                ErrorMessage = "Selling price is not valid!";
+                return Page();
+            }
+            if (Input.LowStockLimit <= 0)
+            {
+                ErrorMessage = "Low stock limit is not valid!";
+                return Page();
+            }
+            if(Input.CurrentStock < 0)
+            {
+                ErrorMessage = "Current stock amount is not valid!";
+                return Page();
+            }
+            if(Input.SellingPrice <= Input.PurchasePrice)
+            {
+                ErrorMessage = "Selling price should be greater than Purchasing price!";
+                return Page();
+            }
+            if(Input.LowStockLimit >= Input.CurrentStock)
+            {
+                ErrorMessage = "Current stock should be greater than Low stock limit!";
+                return Page();
+            }
             try
             {
                 var getToken = HttpContext.Session.GetString("JwtToken");
@@ -36,9 +71,9 @@ namespace HisaabPlus.Web.Pages.Products
                 Input = await _apiService.PostAsync<ProductResponseModel>("api/product/AddProduct", Input, getToken);
                 return RedirectToPage("/Products/Index");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to add product. Try again.";
                 return Page();
             }
         }

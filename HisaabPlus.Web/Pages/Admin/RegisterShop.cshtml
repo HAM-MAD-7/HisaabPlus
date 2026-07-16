@@ -24,7 +24,7 @@
 
     <div>
         <label asp-for="Input.PhoneNumber"></label>
-        <input asp-for="Input.PhoneNumber" />
+        <input type="tel" asp-for="Input.PhoneNumber" />
         <span asp-validation-for="Input.PhoneNumber"></span>
     </div>
 
@@ -36,7 +36,7 @@
 
     <div>
         <label asp-for="Input.Email"></label>
-        <input asp-for="Input.Email" />
+        <input type="email" asp-for="Input.Email" />
         <span asp-validation-for="Input.Email"></span>
     </div>
 

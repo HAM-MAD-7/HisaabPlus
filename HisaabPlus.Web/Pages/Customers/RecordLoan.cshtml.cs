@@ -27,6 +27,11 @@ namespace HisaabPlus.Web.Pages.Customers
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!ModelState.IsValid)
+            {
+                ErrorMessage = "Pls fill all required feilds!";
+                return Page();
+            }
             try
             {
                 var getToken = HttpContext.Session.GetString("JwtToken");
@@ -37,9 +42,9 @@ namespace HisaabPlus.Web.Pages.Customers
                 await _apiService.PostAsync<LoanInputModel>("api/customer/AddLoanRecord", Input, getToken);
                 return RedirectToPage("/Customers/Detail", new { customerId = Input.CustomerId});
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                ErrorMessage = ex.Message;
+                ErrorMessage = "Failed to record loan. Try Again.";
                 return Page();
             }
         }
