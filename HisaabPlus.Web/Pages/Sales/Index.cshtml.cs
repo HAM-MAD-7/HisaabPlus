@@ -23,7 +23,7 @@ namespace HisaabPlus.Web.Pages.Sales
                 {
                     return RedirectToPage("/Auth/Login");
                 }
-                Sales = await _apiService.GetAsync<List<SaleResponseModel>>("api/SalesService/getSales/today", getToken);
+                Sales = await _apiService.GetAsync<List<SaleResponseModel>>("api/salesservice/getSales/today", getToken);
                 return Page();
             }
             catch (Exception)

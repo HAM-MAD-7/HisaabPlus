@@ -61,12 +61,19 @@ namespace HisaabPlus.Web.Pages.Products
                 ErrorMessage = "Current stock should be greater than Low stock limit!";
                 return Page();
             }
+            
             try
             {
                 var getToken = HttpContext.Session.GetString("JwtToken");
                 if (getToken == null)
                 {
                     return RedirectToPage("/Auth/Login");
+                }
+                var allProducts = await _apiService.GetAsync<List<ProductResponseModel>>("api/product/GetAllProducts", getToken);
+                if(allProducts.Any(p => p.ProductName.ToLower() == Input.ProductName.ToLower()))
+                {
+                    ErrorMessage = "Product with this name already exists!";
+                    return Page();
                 }
                 Input = await _apiService.PostAsync<ProductResponseModel>("api/product/AddProduct", Input, getToken);
                 return RedirectToPage("/Products/Index");

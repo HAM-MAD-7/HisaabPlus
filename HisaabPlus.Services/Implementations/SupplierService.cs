@@ -68,6 +68,51 @@ namespace HisaabPlus.Services.Implementations
         }
         public async Task<SupplierDTO> AddAsync(SupplierDTO supplierDTO, int shopId)
         {
+            if (string.IsNullOrWhiteSpace(supplierDTO.SupplierName))
+            {
+                throw new Exception("Supplier name is required!");
+            }
+
+            if (string.IsNullOrWhiteSpace(supplierDTO.PhoneNumber))
+            {
+                throw new Exception("Phone number is required!");
+            }
+
+            if (string.IsNullOrWhiteSpace(supplierDTO.CompanyName))
+            {
+                throw new Exception("Company name is required!");
+            }
+
+            if (!supplierDTO.PhoneNumber.All(char.IsDigit) || supplierDTO.PhoneNumber.Length != 11)
+            {
+                throw new Exception("Phone number must be 11 digits!");
+            }
+
+            var phoneExistsInShops = await _db.Shops.AnyAsync(s => s.PhoneNumber == supplierDTO.PhoneNumber);
+            var phoneExistsInCustomers = await _db.Customers.AnyAsync(c => c.PhoneNumber == supplierDTO.PhoneNumber && c.ShopId == shopId);
+
+            if (phoneExistsInShops || phoneExistsInCustomers)
+            {
+                throw new Exception("This phone number is already registered!");
+            }
+
+            var existingSupplier = await _db.Suppliers.FirstOrDefaultAsync(s =>
+                s.ShopId == shopId &&
+                s.PhoneNumber == supplierDTO.PhoneNumber);
+
+            if (existingSupplier != null)
+            {
+                throw new Exception("Supplier with this phone number already exists!");
+            }
+
+            var existingSupplierName = await _db.Suppliers.FirstOrDefaultAsync(s =>
+                s.ShopId == shopId &&
+                s.SupplierName.ToLower() == supplierDTO.SupplierName.ToLower());
+
+            if (existingSupplierName != null)
+            {
+                throw new Exception("Supplier with this name already exists!");
+            }
             var addSupplier = new Supplier
             {
                 ShopId = shopId,
@@ -75,7 +120,7 @@ namespace HisaabPlus.Services.Implementations
                 PhoneNumber = supplierDTO.PhoneNumber,
                 CompanyName = supplierDTO.CompanyName,
                 TotalBalance = 0,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = GetPakistanTime()
             };
             await _db.Suppliers.AddAsync(addSupplier);
             await _db.SaveChangesAsync();
@@ -92,6 +137,52 @@ namespace HisaabPlus.Services.Implementations
         }
         public async Task<bool> UpdateAsync(int supplierId, SupplierDTO supplierDTO, int shopId)
         {
+            if (string.IsNullOrWhiteSpace(supplierDTO.SupplierName))
+            {
+                throw new Exception("Supplier name is required!");
+            }
+
+            if (string.IsNullOrWhiteSpace(supplierDTO.PhoneNumber))
+            {
+                throw new Exception("Phone number is required!");
+            }
+
+            if (string.IsNullOrWhiteSpace(supplierDTO.CompanyName))
+            {
+                throw new Exception("Company name is required!");
+            }
+
+            if (!supplierDTO.PhoneNumber.All(char.IsDigit) || supplierDTO.PhoneNumber.Length != 11)
+            {
+                throw new Exception("Phone number must be 11 digits!");
+            }
+
+            var phoneExistsInShops = await _db.Shops.AnyAsync(s => s.PhoneNumber == supplierDTO.PhoneNumber);
+            var phoneExistsInCustomers = await _db.Customers.AnyAsync(c => c.PhoneNumber == supplierDTO.PhoneNumber && c.ShopId == shopId);
+
+            if (phoneExistsInShops || phoneExistsInCustomers)
+            {
+                throw new Exception("This phone number is already registered!");
+            }
+
+            var existingSupplier = await _db.Suppliers.FirstOrDefaultAsync(s =>
+                s.ShopId == shopId &&
+                s.PhoneNumber == supplierDTO.PhoneNumber && s.SupplierId != supplierId);
+
+            if (existingSupplier != null)
+            {
+                throw new Exception("Supplier with this phone number already exists!");
+            }
+
+            var existingSupplierName = await _db.Suppliers.FirstOrDefaultAsync(s =>
+                s.ShopId == shopId &&
+                s.SupplierName.ToLower() == supplierDTO.SupplierName.ToLower());
+
+            if (existingSupplierName != null)
+            {
+                throw new Exception("Supplier with this name already exists!");
+            }
+
             var getSupplier = await _db.Suppliers.FirstOrDefaultAsync(s => s.SupplierId == supplierId && s.ShopId == shopId);
             if (getSupplier == null)
             {
@@ -110,12 +201,44 @@ namespace HisaabPlus.Services.Implementations
             {
                 throw new Exception("Supplier Not Found!");
             }
+            if (string.IsNullOrWhiteSpace(stockPurchaseDTO.PaymentType))
+            {
+                throw new Exception("Payment type is required!");
+            }
+
+            if (stockPurchaseDTO.Items == null || stockPurchaseDTO.Items.Count == 0)
+            {
+                throw new Exception("At least one product is required!");
+            }
+
+            foreach (var item in stockPurchaseDTO.Items)
+            {
+                if (item.Quantity <= 0)
+                {
+                    throw new Exception("Quantity must be greater than 0!");
+                }
+                if (item.UnitPrice <= 0)
+                {
+                    throw new Exception("Unit price must be greater than 0!");
+                }
+            }
+
+            if (stockPurchaseDTO.PaidAmount < 0)
+            {
+                throw new Exception("Paid amount cannot be negative!");
+            }
+
             decimal totalAmount = stockPurchaseDTO.Items.Sum(p => p.Quantity * p.UnitPrice);
+
+            if (stockPurchaseDTO.PaidAmount > totalAmount)
+            {
+                throw new Exception("Paid amount cannot exceed total amount!");
+            }
             var stockPurchase = new StockPurchase
             {
                 ShopId = shopId,
                 SupplierId = stockPurchaseDTO.SupplierId,
-                PurchaseDate = DateTime.UtcNow,
+                PurchaseDate = GetPakistanTime(),
                 TotalAmount = totalAmount,
                 PaymentType = stockPurchaseDTO.PaymentType,
                 PaidAmount = stockPurchaseDTO.PaidAmount,
@@ -156,7 +279,11 @@ namespace HisaabPlus.Services.Implementations
             {
                 throw new Exception("Supplier Not Found!");
             }
-            if(supplierPaymentDTO.Amount > getSupplier.TotalBalance)
+            if (supplierPaymentDTO.Amount <= 0)
+            {
+                throw new Exception("Amount must be greater than 0!");
+            }
+            if (supplierPaymentDTO.Amount > getSupplier.TotalBalance)
             {
                 throw new Exception("Amount exceeds supplier balance!");
             }
@@ -166,7 +293,7 @@ namespace HisaabPlus.Services.Implementations
                 SupplierId = supplierPaymentDTO.SupplierId,
                 Amount = supplierPaymentDTO.Amount,
                 Notes = supplierPaymentDTO.Notes,
-                PaymentDate = DateTime.UtcNow,
+                PaymentDate = GetPakistanTime(),
                 PaidBy = userId
             };
             getSupplier.TotalBalance -= supplierPaymentDTO.Amount;
@@ -190,7 +317,7 @@ namespace HisaabPlus.Services.Implementations
         }
         public async Task<List<StockPurchaseResponseDTO>> GetMonthlyPurchasesAsync(int shopId)
         {
-            var today = DateTime.UtcNow;
+            var today = GetPakistanTime();
             var startDate = new DateTime(today.Year, today.Month, 1);
             var endDate = startDate.AddMonths(1);
             var itemsPurchases = await _db.StockPurchases.Include(i => i.StockPurchaseItems).Include(l => l.Supplier).Where(p => p.ShopId == shopId && p.PurchaseDate >= startDate && p.PurchaseDate < endDate).ToListAsync();
@@ -241,6 +368,11 @@ namespace HisaabPlus.Services.Implementations
                 }).ToList()
             };
             return mapPurchase;
+        }
+        private DateTime GetPakistanTime()
+        {
+            TimeZoneInfo pakistanZone = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
+            return TimeZoneInfo.ConvertTime(DateTime.UtcNow, pakistanZone);
         }
     }
 }

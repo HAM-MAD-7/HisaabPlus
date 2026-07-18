@@ -56,6 +56,50 @@ namespace HisaabPlus.Services.Implementations
         }
         public async Task<ProductDTO> AddAsync(ProductDTO productDTO, int shopId)
         {
+            if (string.IsNullOrWhiteSpace(productDTO.ProductName))
+            {
+                throw new Exception("Product name is required!");
+            }
+
+            if (productDTO.PurchasePrice <= 0)
+            {
+                throw new Exception("Purchase price must be greater than 0!");
+            }
+
+            if (productDTO.SellingPrice <= 0)
+            {
+                throw new Exception("Selling price must be greater than 0!");
+            }
+
+            if (productDTO.SellingPrice <= productDTO.PurchasePrice)
+            {
+                throw new Exception("Selling price must be greater than purchase price!");
+            }
+
+            if (productDTO.CurrentStock < 0)
+            {
+                throw new Exception("Current stock cannot be negative!");
+            }
+
+            if (productDTO.LowStockLimit <= 0)
+            {
+                throw new Exception("Low stock limit must be greater than 0!");
+            }
+
+            if (productDTO.LowStockLimit >= productDTO.CurrentStock)
+            {
+                throw new Exception("Current stock must be greater than low stock limit!");
+            }
+
+            var existingProduct = await _db.Products.FirstOrDefaultAsync(p =>
+                p.ShopId == shopId &&
+                p.ProductName.ToLower() == productDTO.ProductName.ToLower() &&
+                p.IsActive == true);
+
+            if (existingProduct != null)
+            {
+                throw new Exception("Product with this name already exists!");
+            }
             var addProduct = new Product
             {
                 ShopId = shopId,
@@ -87,6 +131,51 @@ namespace HisaabPlus.Services.Implementations
         }
         public async Task<bool> UpdateAsync(int productId, ProductDTO productDTO, int shopId)
         {
+            if (string.IsNullOrWhiteSpace(productDTO.ProductName))
+            {
+                throw new Exception("Product name is required!");
+            }
+
+            if (productDTO.PurchasePrice <= 0)
+            {
+                throw new Exception("Purchase price must be greater than 0!");
+            }
+
+            if (productDTO.SellingPrice <= 0)
+            {
+                throw new Exception("Selling price must be greater than 0!");
+            }
+
+            if (productDTO.SellingPrice <= productDTO.PurchasePrice)
+            {
+                throw new Exception("Selling price must be greater than purchase price!");
+            }
+
+            if (productDTO.CurrentStock < 0)
+            {
+                throw new Exception("Current stock cannot be negative!");
+            }
+
+            if (productDTO.LowStockLimit <= 0)
+            {
+                throw new Exception("Low stock limit must be greater than 0!");
+            }
+
+            if (productDTO.LowStockLimit >= productDTO.CurrentStock)
+            {
+                throw new Exception("Current stock must be greater than low stock limit!");
+            }
+
+            var existingProduct = await _db.Products.FirstOrDefaultAsync(p =>
+                p.ShopId == shopId &&
+                p.ProductName.ToLower() == productDTO.ProductName.ToLower() &&
+                p.IsActive == true && p.ProductId != productId);
+
+            if (existingProduct != null)
+            {
+                throw new Exception("Product with this name already exists!");
+            }
+
             var getProduct = await _db.Products.FirstOrDefaultAsync(c => c.ProductId == productId && c.ShopId == shopId);
             if (getProduct == null)
             {

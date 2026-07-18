@@ -18,10 +18,34 @@ namespace HisaabPlus.Services.Implementations
         }
         public async Task<SaleResponseDTO> CreateSaleAsync(CreateSaleDTO createSaleDTO, int shopId, int userId)
         {
+            if (string.IsNullOrWhiteSpace(createSaleDTO.PaymentType))
+            {
+                throw new Exception("Payment type is required!");
+            }
+
+            if (createSaleDTO.Items == null || createSaleDTO.Items.Count == 0)
+            {
+                throw new Exception("At least one product is required!");
+            }
+
+            if (createSaleDTO.PaymentType.ToLower() == "loan" && !createSaleDTO.CustomerId.HasValue)
+            {
+                throw new Exception("Loan sales require a registered customer!");
+            }
+
+            if (createSaleDTO.PaidAmount < 0)
+            {
+                throw new Exception("Paid amount cannot be negative!");
+            }
+
             decimal totalAmount = 0;
             var saleProducts = new List<(Product product, SaleItemInputDTO item)>();
             foreach(var items in createSaleDTO.Items)
             {
+                if (items.Quantity <= 0)
+                {
+                    throw new Exception("Quantity must be greater than 0!");
+                }
                 var getProduct = await _db.Products.FirstOrDefaultAsync(p => p.ProductId == items.ProductId && p.ShopId == shopId && p.IsActive == true);
                 if(getProduct == null)
                 {
@@ -35,11 +59,15 @@ namespace HisaabPlus.Services.Implementations
                 totalAmount += itemTotal;
                 saleProducts.Add((getProduct, items));
             }
+            if (createSaleDTO.PaidAmount > totalAmount)
+            {
+                throw new Exception("Paid amount cannot exceed total amount!");
+            }
             var newSale = new Sale
             {
                 ShopId = shopId,
                 CustomerId = createSaleDTO.CustomerId,
-                SaleDate = DateTime.UtcNow,
+                SaleDate = GetPakistanTime(),
                 TotalAmount = totalAmount,
                 PaymentType = createSaleDTO.PaymentType,
                 PaidAmount = createSaleDTO.PaidAmount,
@@ -111,7 +139,7 @@ namespace HisaabPlus.Services.Implementations
         }
         public async Task<List<SaleResponseDTO>> GetTodaySalesAsync(int shopId)
         {
-            var todayStart = DateTime.UtcNow.Date;
+            var todayStart = GetPakistanTime().Date;
             var todayEnd = todayStart.AddDays(1);
             var customerName = "";
             var result = new List<SaleResponseDTO>();
@@ -191,6 +219,11 @@ namespace HisaabPlus.Services.Implementations
                 CustomerName = customerName,
                 Items = mapSaleItems
             };
+        }
+        private DateTime GetPakistanTime()
+        {
+            TimeZoneInfo pakistanZone = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
+            return TimeZoneInfo.ConvertTime(DateTime.UtcNow, pakistanZone);
         }
     }
 }

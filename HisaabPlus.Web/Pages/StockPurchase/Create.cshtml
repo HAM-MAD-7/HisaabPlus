@@ -12,7 +12,7 @@
     </div>
 }
 <form method="post" id="purchaseForm" asp-antiforgery="true">
-    @Html.AntiForgeryToken();
+    @Html.AntiForgeryToken()
     <div>
         <select asp-for="Input.SupplierId" asp-items="@(new SelectList(Model.Suppliers, "SupplierId", "SupplierName"))">
             <option>Suppliers</option>
@@ -80,7 +80,7 @@
         </select>
     </div>
     <div>
-        <button type="submit">Create Purchase</button>
+        <button type="submit" name="Action" value="CreatePurchase">Create Purchase</button>
         <a asp-page="/StockPurchase/Index">Cancel</a>
     </div>
 </form>

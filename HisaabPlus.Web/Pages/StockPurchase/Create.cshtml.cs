@@ -44,11 +44,7 @@ namespace HisaabPlus.Web.Pages.StockPurchase
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            if(!ModelState.IsValid)
-            {
-                ErrorMessage = "Pls fill all feilds!";
-                return Page();
-            }
+            
             try
             {
                 var getToken = HttpContext.Session.GetString("JwtToken");
@@ -75,7 +71,7 @@ namespace HisaabPlus.Web.Pages.StockPurchase
                     return Page();
                 }
                 Input.Items = Input.Items.Where(p => p.ProductId > 0).ToList();
-                if(Input.SupplierId == 0)
+                if (Input.SupplierId == 0)
                 {
                     ErrorMessage = "Pls select a supplier";
                     return Page();

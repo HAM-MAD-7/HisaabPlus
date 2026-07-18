@@ -77,6 +77,12 @@ namespace HisaabPlus.Web.Pages.Products
                 {
                     return RedirectToPage("/Auth/Login");
                 }
+                var allProducts = await _apiService.GetAsync<List<ProductResponseModel>>("api/product/GetAllProducts", getToken);
+                if (allProducts.Any(p => p.ProductName.ToLower() == Input.ProductName.ToLower() && p.ProductId != Input.ProductId))
+                {
+                    ErrorMessage = "Product with this name already exists!";
+                    return Page();
+                }
                 await _apiService.PutAsync<bool>($"api/product/UpdateProduct/{Input.ProductId}", Input, getToken);
                 return RedirectToPage("/Products/Index");
             }

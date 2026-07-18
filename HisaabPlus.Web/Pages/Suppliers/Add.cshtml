@@ -13,7 +13,7 @@
 }
 
 <form method="post" asp-antiforgery="true">
-    @Html.AntiForgeryToken();
+    @Html.AntiForgeryToken()
     <div>
         <label asp-for="Input.SupplierName"></label>
         <input asp-for="Input.SupplierName"/>

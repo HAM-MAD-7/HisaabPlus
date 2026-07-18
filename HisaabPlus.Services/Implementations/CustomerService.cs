@@ -67,11 +67,48 @@ namespace HisaabPlus.Services.Implementations
         }
         public async Task<CustomerDTO> AddAsync(CustomerDTO customerDTO, int shopId)
         {
+            if (string.IsNullOrWhiteSpace(customerDTO.FullName))
+            {
+                throw new Exception("Customer name is required!");
+            }
+
+            if (string.IsNullOrWhiteSpace(customerDTO.PhoneNumber))
+            {
+                throw new Exception("Phone number is required!");
+            }
+
+            if (string.IsNullOrWhiteSpace(customerDTO.Address))
+            {
+                throw new Exception("Address is required!");
+            }
+
+            if (!customerDTO.PhoneNumber.All(char.IsDigit) || customerDTO.PhoneNumber.Length != 11)
+            {
+                throw new Exception("Phone number must be 11 digits!");
+            }
+
+            var phoneExistsInShops = await _db.Shops.AnyAsync(s => s.PhoneNumber == customerDTO.PhoneNumber);
+            var phoneExistsInSuppliers = await _db.Suppliers.AnyAsync(s => s.PhoneNumber == customerDTO.PhoneNumber && s.ShopId == shopId);
+
+            if (phoneExistsInShops || phoneExistsInSuppliers)
+            {
+                throw new Exception("This phone number is already registered!");
+            }
+
+            var existingCustomer = await _db.Customers.FirstOrDefaultAsync(c =>
+                c.ShopId == shopId &&
+                c.PhoneNumber == customerDTO.PhoneNumber);
+
+            if (existingCustomer != null)
+            {
+                throw new Exception("Customer with this phone number already exists!");
+            }
+
             var addCustomer = new Customer
             {
                 ShopId = shopId,
                 TotalBalance = 0,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = GetPakistanTime(),
                 FullName = customerDTO.FullName,
                 Address = customerDTO.Address,
                 PhoneNumber = customerDTO.PhoneNumber
@@ -85,12 +122,49 @@ namespace HisaabPlus.Services.Implementations
                 Address = addCustomer.Address,
                 PhoneNumber = addCustomer.PhoneNumber,
                 TotalBalance= addCustomer.TotalBalance,
-                CreatedAt = addCustomer.CreatedAt
+                CreatedAt = GetPakistanTime()
             };
             return mapCustomer;
         }
         public async Task<bool> UpdateAsync(int customerId, CustomerDTO customerDTO, int shopId)
         {
+            if (string.IsNullOrWhiteSpace(customerDTO.FullName))
+            {
+                throw new Exception("Customer name is required!");
+            }
+
+            if (string.IsNullOrWhiteSpace(customerDTO.PhoneNumber))
+            {
+                throw new Exception("Phone number is required!");
+            }
+
+            if (string.IsNullOrWhiteSpace(customerDTO.Address))
+            {
+                throw new Exception("Address is required!");
+            }
+
+            if (!customerDTO.PhoneNumber.All(char.IsDigit) || customerDTO.PhoneNumber.Length != 11)
+            {
+                throw new Exception("Phone number must be 11 digits!");
+            }
+
+            var phoneExistsInShops = await _db.Shops.AnyAsync(s => s.PhoneNumber == customerDTO.PhoneNumber);
+            var phoneExistsInSuppliers = await _db.Suppliers.AnyAsync(s => s.PhoneNumber == customerDTO.PhoneNumber && s.ShopId == shopId);
+
+            if (phoneExistsInShops || phoneExistsInSuppliers)
+            {
+                throw new Exception("This phone number is already registered!");
+            }
+
+            var existingCustomer = await _db.Customers.FirstOrDefaultAsync(c =>
+                c.ShopId == shopId &&
+                c.PhoneNumber == customerDTO.PhoneNumber && c.CustomerId != customerId);
+
+            if (existingCustomer != null)
+            {
+                throw new Exception("Customer with this phone number already exists!");
+            }
+
             var getCustomer = await _db.Customers.FirstOrDefaultAsync(c => c.CustomerId == customerId && c.ShopId == shopId);
             if(getCustomer == null)
             {
@@ -113,7 +187,7 @@ namespace HisaabPlus.Services.Implementations
             { 
                 ShopId = shopId,
                 CustomerId = loanDTO.CustomerId,
-                SaleDate = DateTime.UtcNow,
+                SaleDate = GetPakistanTime(),
                 TotalAmount = loanDTO.Amount,
                 PaymentType = "Loan",
                 PaidAmount = 0,
@@ -141,7 +215,7 @@ namespace HisaabPlus.Services.Implementations
                 ShopId = shopId,
                 CustomerId = payLoanDTO.CustomerId,
                 Amount = payLoanDTO.Amount,
-                PaymentDate = DateTime.UtcNow,
+                PaymentDate = GetPakistanTime(),
                 Notes = payLoanDTO.Notes,
                 ReceivedBy = userId
             };
@@ -160,9 +234,14 @@ namespace HisaabPlus.Services.Implementations
                 PhoneNumber = c.PhoneNumber,
                 Address = c.Address,
                 TotalBalance = c.TotalBalance,
-                CreatedAt = c.CreatedAt
+                CreatedAt = GetPakistanTime(),
             }).ToList();
             return mapCustomers;
+        }
+        private DateTime GetPakistanTime()
+        {
+            TimeZoneInfo pakistanZone = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
+            return TimeZoneInfo.ConvertTime(DateTime.UtcNow, pakistanZone);
         }
     }
 }
