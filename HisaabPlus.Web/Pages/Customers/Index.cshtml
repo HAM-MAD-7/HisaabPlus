@@ -2,50 +2,64 @@
 @model HisaabPlus.Web.Pages.Customers.IndexModel
 @{
 }
-<a asp-page="/Customers/Add">Add New Customer</a>
-@if(!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <p style="color:red">@Model.ErrorMessage</p>
-}
-@if(Model.Customers != null && Model.Customers.Count > 0)
-{
-    <table>
-        <thead>
-            <tr>
-                <th>FullName</th>
-                <th>PhoneNumber</th>
-                <th>TotalBalance</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Customers)
-            {
-                <tr>
-                    <td>@item.FullName</td>
-                    <td>@item.PhoneNumber</td>
-                    <td>
-                        @if (item.TotalBalance > 0)
-                        {
-                            <span style="color:red">@item.TotalBalance</span>
-                        }
-                        else
-                        {
-                            <span>@item.TotalBalance</span>
-                        }
-                    </td>
-                    <td>
-                        <a asp-page="/Customers/Detail" asp-route-customerId="@item.CustomerId">View Detail</a>
-                        <a asp-page="/Customers/Edit" asp-route-customerId="@item.CustomerId">Edit</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <div>
-        <p>No customer found.</p>
+
+<div class="page-container">
+    <div class="page-header">
+        <h1>Customers</h1>
+        <a asp-page="/Customers/Add">+ Add New Customer</a>
     </div>
-}
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <p>@Model.ErrorMessage</p>
+        </div>
+    }
+
+    @if (Model.Customers != null && Model.Customers.Count > 0)
+    {
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Phone Number</th>
+                        <th>Total Balance</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Customers)
+                    {
+                        <tr>
+                            <td>@item.FullName</td>
+                            <td>@item.PhoneNumber</td>
+                            <td>
+                                @if (item.TotalBalance > 0)
+                                {
+                                    <span class="text-warning">Rs. @item.TotalBalance</span>
+                                }
+                                else
+                                {
+                                    <span>Rs. @item.TotalBalance</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="action-links">
+                                    <a asp-page="/Customers/Detail" asp-route-customerId="@item.CustomerId">Detail</a>
+                                    <a asp-page="/Customers/Edit" asp-route-customerId="@item.CustomerId">Edit</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            <p>No customers found.</p>
+        </div>
+    }
+</div>

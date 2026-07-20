@@ -2,101 +2,116 @@
 @model HisaabPlus.Web.Pages.Suppliers.DetailModel
 @{
 }
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div>
-        <p style="color:red">@Model.ErrorMessage</p>
+
+<div class="page-container">
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <p>@Model.ErrorMessage</p>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header">Supplier Info</div>
+        <div class="card-body">
+            <p><strong>Supplier ID:</strong> @Model.SupplierDetail.SupplierId</p>
+            <p><strong>Supplier Name:</strong> @Model.SupplierDetail.SupplierName</p>
+            <p><strong>Phone:</strong> @Model.SupplierDetail.PhoneNumber</p>
+            <p><strong>Company Name:</strong> @Model.SupplierDetail.CompanyName</p>
+        </div>
     </div>
-}
-<div>
-    <h1>Supplier Info</h1>
-    <p><strong>Supplier Id:</strong> @Model.SupplierDetail.SupplierId</p>
-    <p><strong>Supplier Name:</strong> @Model.SupplierDetail.SupplierName</p>
-    <p><strong>Phone:</strong> @Model.SupplierDetail.PhoneNumber</p>
-    <p><strong>Company Name:</strong> @Model.SupplierDetail.CompanyName</p>
-    <div>
-        <label>Total Balance</label>
-        @if (Model.SupplierDetail.TotalBalance > 0)
-        {
-            <p style="color:red"><strong>@Model.SupplierDetail.TotalBalance</strong></p>
-        }
-        else
-        {
-            <p><strong>@Model.SupplierDetail.TotalBalance</strong></p>
-        }
-    </div>
-</div>
-<h1>Purchase History Record</h1>
-@if(Model.SupplierDetail.PurchaseHistory != null && Model.SupplierDetail.PurchaseHistory.Count > 0)
-{
-    <table>
-        <thead>
-            <tr>
-                <th>Purchase Id</th>
-                <th>Purchase Date</th>
-                <th>Total Amount</th>
-                <th>Paid Amount</th>
-                <th>Remaining Amount</th>
-                <th>Payment Type</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.SupplierDetail.PurchaseHistory)
+
+    <div class="card">
+        <div class="card-header">Total Balance</div>
+        <div class="card-body">
+            @if (Model.SupplierDetail.TotalBalance > 0)
             {
-                <tr>
-                    <td>@item.PurchaseId</td>
-                    <td>@item.PurchaseDate</td>
-                    <td>@item.TotalAmount</td>
-                    <td>@item.PaidAmount</td>
-                    <td>@item.RemainingAmount</td>
-                    <td>@item.PaymentType</td>
-                </tr>
+                <p class="metric-value text-warning">Rs. @Model.SupplierDetail.TotalBalance</p>
             }
-        </tbody>
-    </table>
-}
-else
-{
-    <div>
-        <p>No purchase history record found.</p>
-    </div>
-}
-<h1>Payment History Record</h1>
-@if(Model.SupplierDetail.PaymentHistory != null && Model.SupplierDetail.PaymentHistory.Count > 0)
-{
-    <table>
-        <thead>
-            <tr>
-                <th>Payment Id</th>
-                <th>Amount</th>
-                <th>Payment Date</th>
-                <th>Notes</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.SupplierDetail.PaymentHistory)
+            else
             {
-                <tr>
-                    <td>@item.PaymentId</td>
-                    <td>@item.Amount</td>
-                    <td>@item.PaymentDate</td>
-                    <td>@item.Notes</td>
-                </tr>
+                <p class="metric-value">Rs. @Model.SupplierDetail.TotalBalance</p>
             }
-        </tbody>
-    </table>
-}
-else
-{
-    <div>
-        <p>No payment history record found.</p>
+        </div>
     </div>
-}
-<div>
-    <a asp-page="/StockPurchase/Create" asp-route-supplierId="@Model.SupplierDetail.SupplierId">Record Stock Purchase</a>
-    <br />
-    <a asp-page="/StockPurchase/RecordPayment" asp-route-supplierId="@Model.SupplierDetail.SupplierId">Record Payment</a>
-</div>
-<div>
-    <a asp-page="/Suppliers/Index">Back to suppliers</a>
+
+    <h2 class="mt-20">Purchase History</h2>
+    @if (Model.SupplierDetail.PurchaseHistory != null && Model.SupplierDetail.PurchaseHistory.Count > 0)
+    {
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Purchase ID</th>
+                        <th>Purchase Date</th>
+                        <th>Total Amount</th>
+                        <th>Paid Amount</th>
+                        <th>Remaining Amount</th>
+                        <th>Payment Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.SupplierDetail.PurchaseHistory)
+                    {
+                        <tr>
+                            <td>@item.PurchaseId</td>
+                            <td>@item.PurchaseDate.ToShortDateString()</td>
+                            <td>Rs. @item.TotalAmount</td>
+                            <td>Rs. @item.PaidAmount</td>
+                            <td>Rs. @item.RemainingAmount</td>
+                            <td>@item.PaymentType</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            <p>No purchase history found.</p>
+        </div>
+    }
+
+    <h2 class="mt-20">Payment History</h2>
+    @if (Model.SupplierDetail.PaymentHistory != null && Model.SupplierDetail.PaymentHistory.Count > 0)
+    {
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Payment ID</th>
+                        <th>Amount</th>
+                        <th>Payment Date</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.SupplierDetail.PaymentHistory)
+                    {
+                        <tr>
+                            <td>@item.PaymentId</td>
+                            <td>Rs. @item.Amount</td>
+                            <td>@item.PaymentDate.ToShortDateString()</td>
+                            <td>@item.Notes</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            <p>No payment history found.</p>
+        </div>
+    }
+
+    <div class="mt-20">
+        <div class="action-links">
+            <a asp-page="/StockPurchase/Create" asp-route-supplierId="@Model.SupplierDetail.SupplierId">Record Stock Purchase</a>
+            <a asp-page="/StockPurchase/RecordPayment" asp-route-supplierId="@Model.SupplierDetail.SupplierId">Record Payment</a>
+            <a asp-page="/Suppliers/Index">Back</a>
+        </div>
+    </div>
 </div>

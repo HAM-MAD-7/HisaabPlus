@@ -1,53 +1,73 @@
 ﻿@page
 @model HisaabPlus.Web.Pages.Dashboard.ReportModel
 @{
-
-}
-<div>
-    <div>
-        <h1>Month</h1>
-        <p>@Model.Data.Month</p>
-    </div>
-
-    <div>
-        <h1>Year</h1>
-        <p>@Model.Data.Year</p>
-    </div>
-
-    <div>
-        <h1>Total Sales</h1>
-        <p>@Model.Data.TotalSales</p>
-    </div>
-
-    <div>
-        <h1>Total Cash Sales</h1>
-        <p>@Model.Data.TotalCashSales</p>
-    </div>
-
-    <div>
-        <h1>Total Loan Sales</h1>
-        <p>@Model.Data.TotalLoanSales</p>
-    </div>
-
-    <div>
-        <h1>Total Customer Payments</h1>
-        <p>@Model.Data.TotalCustomerPayments</p>
-    </div>
-
-    <div>
-        <h1>Monthly Estimated Profit</h1>
-        <p>@Model.Data.EstimatedProfit.ToString("F2")</p>
-    </div>
-</div>
-
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div>
-        <h1>Message</h1>
-        <p>@Model.ErrorMessage</p>
-    </div>
 }
 
-<div>
-    <a asp-page="/Dashboard/Index">Back to regular report</a>
+<div class="page-container">
+    <h1 class="page-title">Monthly Report</h1>
+
+    <div class="dashboard-grid">
+  
+        <div class="card">
+            <div class="card-header">Month</div>
+            <div class="card-body">
+                <p class="metric-value">@Model.Data.Month</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Year</div>
+            <div class="card-body">
+                <p class="metric-value">@Model.Data.Year</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Total Sales</div>
+            <div class="card-body">
+                <p class="metric-value text-primary">Rs. @Model.Data.TotalSales</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Total Cash Sales</div>
+            <div class="card-body">
+                <p class="metric-value text-success">Rs. @Model.Data.TotalCashSales</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Total Loan Sales</div>
+            <div class="card-body">
+                <p class="metric-value text-accent">Rs. @Model.Data.TotalLoanSales</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Total Customer Payments</div>
+            <div class="card-body">
+                <p class="metric-value text-success">Rs. @Model.Data.TotalCustomerPayments</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Monthly Estimated Profit</div>
+            <div class="card-body">
+                <p class="metric-value text-success">Rs. @Model.Data.EstimatedProfit.ToString("F2")</p>
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger mt-20">
+            <p>@Model.ErrorMessage</p>
+        </div>
+    }
+
+    <div class="mt-20">
+        <div class="action-links">
+            <a asp-page="/Dashboard/Index">Back to Dashboard</a>
+        </div>
+    </div>
 </div>

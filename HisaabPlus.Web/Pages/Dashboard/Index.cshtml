@@ -3,59 +3,80 @@
 @{
     var today = DateTime.UtcNow;
 }
-<div>
-    <div>
-        <h1>Today's Date</h1>
-        <p>@Model.Dashboard.TodayDate</p>
+
+<div class="dashboard-container">
+    <h1 class="page-title">Dashboard</h1>
+
+    <div class="dashboard-grid">
+ 
+        <div class="card">
+            <div class="card-header">Today's Date</div>
+            <div class="card-body">
+                <p class="metric-value">@Model.Dashboard.TodayDate.ToShortDateString()</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Today's Total Sales</div>
+            <div class="card-body">
+                <p class="metric-value text-primary">Rs. @Model.Dashboard.TodayTotalSales</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Today's Cash Sales</div>
+            <div class="card-body">
+                <p class="metric-value text-success">Rs. @Model.Dashboard.TodayCashSales</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Today's Loan Sales</div>
+            <div class="card-body">
+                <p class="metric-value text-accent">Rs. @Model.Dashboard.TodayLoanSales</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Total Customer Balance</div>
+            <div class="card-body">
+                <p class="metric-value text-warning">Rs. @Model.Dashboard.TotalCustomerBalance</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Total Supplier Balance</div>
+            <div class="card-body">
+                <p class="metric-value text-warning">Rs. @Model.Dashboard.TotalSupplierBalance</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Today's Estimated Profit</div>
+            <div class="card-body">
+                <p class="metric-value text-success">Rs. @Model.Dashboard.TodayEstimatedProfit.ToString("F2")</p>
+            </div>
+        </div>
+
+        @if (@Model.Dashboard.LowStockCount > 0)
+        {
+            <div class="card card-alert">
+                <div class="card-header">⚠️ Low Stock Count</div>
+                <div class="card-body">
+                    <p class="metric-value text-warning">@Model.Dashboard.LowStockCount Products</p>
+                </div>
+            </div>
+        }
     </div>
 
-    <div>
-        <h1>Today's Total Sales</h1>
-        <p>@Model.Dashboard.TodayTotalSales</p>
-    </div>
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger mt-20">
+            <p>@Model.ErrorMessage</p>
+        </div>
+    }
 
-    <div>
-        <h1>Today's Cash Sales</h1>
-        <p>@Model.Dashboard.TodayCashSales</p>
+    <div class="mt-20">
+        <a asp-page="/Dashboard/Report" asp-route-month="@today.Month" asp-route-year="@today.Year" class="btn btn-primary">View Monthly Report</a>
     </div>
-
-    <div>
-        <h1>Today's Loan Sales</h1>
-        <p>@Model.Dashboard.TodayLoanSales</p>
-    </div>
-
-    <div>
-        <h1>Total Customer Balance</h1>
-        <p>@Model.Dashboard.TotalCustomerBalance</p>
-    </div>
-
-    <div>
-        <h1>Total Supplier Balance</h1>
-        <p>@Model.Dashboard.TotalSupplierBalance</p>
-    </div>
-
-    <div>
-        <h1>Today's Estimated Profit</h1>
-        <p>@Model.Dashboard.TodayEstimatedProfit.ToString("F2")</p>
-    </div>
-</div>
-
-@if(@Model.Dashboard.LowStockCount > 0)
-{
-    <div>
-        <h1>Low Stock Count</h1>
-        <p>@Model.Dashboard.LowStockCount</p>
-    </div>
-}
-
-@if(!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div>
-        <h1>Message</h1>
-        <p>@Model.ErrorMessage</p>
-    </div>
-}
-
-<div>
-    <a asp-page="/Dashboard/Report" asp-route-month="@today.Month" asp-route-year="@today.Year">View Monthly Report</a>
 </div>

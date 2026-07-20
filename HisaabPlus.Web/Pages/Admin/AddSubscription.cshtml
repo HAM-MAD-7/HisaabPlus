@@ -2,24 +2,33 @@
 @model HisaabPlus.Web.Pages.Admin.AddSubscriptionModel
 @{
 }
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div>
-        <p style="color:red">@Model.ErrorMessage</p>
-    </div>
-}
-<form method="post" asp-antiforgery="true">
-    @Html.AntiForgeryToken()
 
-    <div>
-        <label>Enter month</label>
-        <input type="number" min="1" asp-for="Months"/>
-        <span asp-validation-for="Months"></span>
-    </div>
+<div class="page-container">
+    <div class="form-container">
+        <h1>Add Subscription</h1>
 
-    <div>
-        <input type="hidden" asp-for="ShopId"/>
-        <button type="submit">Submit</button>
-        <a asp-page="/Admin/Index">Cancel</a>
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">
+                <p>@Model.ErrorMessage</p>
+            </div>
+        }
+
+        <form method="post" asp-antiforgery="true">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label>Enter Months</label>
+                <input type="number" min="1" asp-for="Months" />
+                <span asp-validation-for="Months"></span>
+            </div>
+
+            <input type="hidden" asp-for="ShopId" />
+
+            <div class="form-actions">
+                <button type="submit">Submit</button>
+                <a asp-page="/Admin/Index">Cancel</a>
+            </div>
+        </form>
     </div>
-</form>
+</div>

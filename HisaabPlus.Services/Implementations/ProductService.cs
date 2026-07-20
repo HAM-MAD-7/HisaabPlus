@@ -18,7 +18,7 @@ namespace HisaabPlus.Services.Implementations
         }
         public async Task<List<ProductDTO>> GetAllAsync(int shopId)
         {
-            var products = await _db.Products.Where(p => p.ShopId == shopId && p.IsActive == true).ToListAsync();
+            var products = await _db.Products.Where(p => p.ShopId == shopId).ToListAsync();
             var mapProducts = products.Select(p => new ProductDTO
             {
                 ProductId = p.ProductId,
@@ -35,7 +35,7 @@ namespace HisaabPlus.Services.Implementations
         }
         public async Task<ProductDTO> GetByIdAsync(int productId, int shopId)
         {
-            var getProduct = await _db.Products.FirstOrDefaultAsync(p => p.ProductId == productId && p.ShopId == shopId && p.IsActive == true);
+            var getProduct = await _db.Products.FirstOrDefaultAsync(p => p.ProductId == productId && p.ShopId == shopId);
             if (getProduct == null)
             {
                 throw new Exception("Product Not Found!");
@@ -196,9 +196,20 @@ namespace HisaabPlus.Services.Implementations
             var getProduct = await _db.Products.FirstOrDefaultAsync(c => c.ProductId == productId && c.ShopId == shopId);
             if (getProduct == null)
             {
-                return false;
+                throw new Exception("Product not found!");
             }
             getProduct.IsActive = false;
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> ReactivateAsync(int productId, int shopId)
+        {
+            var product = await _db.Products.FirstOrDefaultAsync(p => p.ProductId == productId && p.ShopId == shopId);
+            if (product == null)
+            {
+                throw new Exception("Product not found!");
+            }
+            product.IsActive = true;
             await _db.SaveChangesAsync();
             return true;
         }

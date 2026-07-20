@@ -2,56 +2,85 @@
 @model HisaabPlus.Web.Pages.Products.IndexModel
 @{
 }
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div style="color:red">
-        @Model.ErrorMessage
+
+<div class="page-container">
+    <div class="page-header">
+        <h1>Products</h1>
+        <a asp-page="/Products/Add">+ Add New Product</a>
     </div>
-}
-<a asp-page="/Products/Add">Add New Product</a>
-@if(Model.Products != null && Model.Products.Count > 0)
-{
-    <table>
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Category</th>
-                <th>Selling Price</th>
-                <th>Stock</th>
-                <th>Unit</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Products)
-            {
-                <tr>
-                    <td>@item.ProductName</td>
-                    <td>@item.Category</td>
-                    <td>@item.SellingPrice</td>
-                    <td>
-                        @item.CurrentStock
-                        @if (item.CurrentStock <= item.LowStockLimit)
-                        {
-                            <span style="color:red">⚠ Low Stock</span>
-                        }
-                    </td>
-                    <td>@item.Unit</td>
-                    <td>
-                        <a asp-page="/Products/Edit" asp-route-productId="@item.ProductId">Edit</a>
-                        <form method="post" asp-page-handler="Delete" style="display:inline;">
-                            <input type="hidden" name="productId" value="@item.ProductId" />
-                            <button type="submit">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <div>
-        <p>No products found!</p>
-    </div>
-}
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <p>@Model.ErrorMessage</p>
+        </div>
+    }
+
+    @if (Model.Products != null && Model.Products.Count > 0)
+    {
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Purchase Price</th>
+                        <th>Selling Price</th>
+                        <th>Current Stock</th>
+                        <th>Low Stock Limit</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.Products)
+                    {
+                        <tr>
+                            <td>@product.ProductName</td>
+                            <td>@product.Category</td>
+                            <td>Rs. @product.PurchasePrice</td>
+                            <td>Rs. @product.SellingPrice</td>
+                            <td>@product.CurrentStock</td>
+                            <td>@product.LowStockLimit</td>
+                            <td>
+                                @if (product.IsActive)
+                                {
+                                    <span class="text-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="text-warning">Inactive</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="action-links">
+                                    <a asp-page="/Products/Edit" asp-route-productId="@product.ProductId">Edit</a>
+                                    @if (product.IsActive)
+                                    {
+                                        <form method="post" asp-page-handler="Delete" style="display:inline;">
+                                            <input type="hidden" name="productId" value="@product.ProductId" />
+                                            <button type="submit" class="action-links delete">Deactivate</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form method="post" asp-page-handler="Reactivate" style="display:inline;">
+                                            <input type="hidden" name="productId" value="@product.ProductId" />
+                                            <button type="submit" class="action-links" style="background-color: var(--success);">Reactivate</button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            <p>No products found.</p>
+        </div>
+    }
+</div>

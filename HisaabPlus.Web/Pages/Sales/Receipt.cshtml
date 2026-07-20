@@ -2,57 +2,71 @@
 @model HisaabPlus.Web.Pages.Sales.ReceiptModel
 @{
 }
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div>
-        <p style="color:red">@Model.ErrorMessage</p>
+
+<div class="page-container">
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <p>@Model.ErrorMessage</p>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header">Sale Info</div>
+        <div class="card-body">
+            <p><strong>Sale ID:</strong> @Model.Sale.SaleId</p>
+            <p><strong>Sale Date:</strong> @Model.Sale.SaleDate.ToShortDateString()</p>
+            <p><strong>Customer Name:</strong> @Model.Sale.CustomerName</p>
+        </div>
     </div>
-}
-<div>
-    <h1>Sale Info</h1>
-    <p><strong>Sale Id:</strong> @Model.Sale.SaleId</p>
-    <p><strong>Sale Date:</strong> @Model.Sale.SaleDate</p>
-    <p><strong>Customer Name:</strong> @Model.Sale.CustomerName</p>
-</div>
-@if (Model.Sale.Items != null && Model.Sale.Items.Count > 0)
-{
-    <table>
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Total Price</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Sale.Items)
-            {
-                <tr>
-                    <td>@item.ProductName</td>
-                    <td>@item.Quantity</td>
-                    <td>@item.UnitPrice</td>
-                    <td>@item.TotalPrice</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <div>
-        <p>No receipt found.</p>
+
+    <h2 class="mt-20">Items</h2>
+    @if (Model.Sale.Items != null && Model.Sale.Items.Count > 0)
+    {
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Sale.Items)
+                    {
+                        <tr>
+                            <td>@item.ProductName</td>
+                            <td>@item.Quantity</td>
+                            <td>Rs. @item.UnitPrice</td>
+                            <td>Rs. @item.TotalPrice</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            <p>No items found in this sale.</p>
+        </div>
+    }
+
+    <div class="card mt-20">
+        <div class="card-header">Sale Summary</div>
+        <div class="card-body">
+            <p><strong>Total Amount:</strong> Rs. @Model.Sale.TotalAmount</p>
+            <p><strong>Paid Amount:</strong> Rs. @Model.Sale.PaidAmount</p>
+            <p><strong>Remaining Amount:</strong> Rs. @Model.Sale.RemainingAmount</p>
+            <p><strong>Payment Type:</strong> @Model.Sale.PaymentType</p>
+        </div>
     </div>
-}
-<br />
-<div>
-    <h1>Sale Summary</h1>
-    <p><strong>Total Amount:</strong> @Model.Sale.TotalAmount</p>
-    <p><strong>Paid Amount:</strong> @Model.Sale.PaidAmount</p>
-    <p><strong>Remaining Amount:</strong> @Model.Sale.RemainingAmount</p>
-    <p><strong>Payment Type:</strong> @Model.Sale.PaymentType</p>
-</div>
-<br />
-<div>
-    <a asp-page="/Sales/Index">Back to Sales</a>
+
+    <div class="mt-20">
+        <div class="action-links">
+            <a asp-page="/Sales/Index">Back to Sales</a>
+        </div>
+    </div>
 </div>

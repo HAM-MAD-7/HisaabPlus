@@ -2,95 +2,112 @@
 @model HisaabPlus.Web.Pages.Customers.DetailModel
 @{
 }
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div style="color:red">@Model.ErrorMessage</div>
-}
-<div>
-    <h1>Customer Info</h1>
-    <p><strong>Name:</strong> @Model.Customer.FullName</p>
-    <p><strong>Phone:</strong> @Model.Customer.PhoneNumber</p>
-    <p><strong>Address:</strong> @Model.Customer.Address</p>
-</div>
 
-<div>
-    <h1>Total Balance</h1>
-    @if(Model.Customer.TotalBalance > 0)
+<div class="page-container">
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
-        <span style="color:red"><strong>@Model.Customer.TotalBalance</strong></span>
+        <div class="alert alert-danger">
+            <p>@Model.ErrorMessage</p>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header">Customer Info</div>
+        <div class="card-body">
+            <p><strong>Name:</strong> @Model.Customer.FullName</p>
+            <p><strong>Phone:</strong> @Model.Customer.PhoneNumber</p>
+            <p><strong>Address:</strong> @Model.Customer.Address</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Total Balance</div>
+        <div class="card-body">
+            @if (Model.Customer.TotalBalance > 0)
+            {
+                <p class="metric-value text-warning">Rs. @Model.Customer.TotalBalance</p>
+            }
+            else
+            {
+                <p class="metric-value">Rs. @Model.Customer.TotalBalance</p>
+            }
+        </div>
+    </div>
+
+    <h2 class="mt-20">Loan History</h2>
+    @if (Model.Customer.LoanHistory != null && Model.Customer.LoanHistory.Count > 0)
+    {
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sale ID</th>
+                        <th>Sale Date</th>
+                        <th>Total Amount</th>
+                        <th>Remaining Amount</th>
+                        <th>Payment Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var loan in Model.Customer.LoanHistory)
+                    {
+                        <tr>
+                            <td>@loan.SaleId</td>
+                            <td>@loan.SaleDate.ToShortDateString()</td>
+                            <td>Rs. @loan.TotalAmount</td>
+                            <td>Rs. @loan.RemainingAmount</td>
+                            <td>@loan.PaymentType</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     }
     else
     {
-        <span><strong>@Model.Customer.TotalBalance</strong></span>
+        <div class="alert alert-danger">
+            <p>No loan history found.</p>
+        </div>
     }
-</div>
 
-<h1>Loan History Record</h1>
-@if(Model.Customer.LoanHistory != null && Model.Customer.LoanHistory.Count > 0)
-{
-    <table>
-        <thead>
-            <tr>
-                <th>Sale Id</th>
-                <th>Sale Date</th>
-                <th>Total Amount</th>
-                <th>Remaining Amount</th>
-                <th>Payment Type</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var loan in Model.Customer.LoanHistory)
-            {
-                <tr>
-                    <td>@loan.SaleId</td>
-                    <td>@loan.SaleDate.ToShortDateString()</td>
-                    <td>@loan.TotalAmount</td>
-                    <td>@loan.RemainingAmount</td>
-                    <td>@loan.PaymentType</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <div>
-        <p>No loan history record found.</p>
+    <h2 class="mt-20">Payment History</h2>
+    @if (Model.Customer.PaymentHistory != null && Model.Customer.PaymentHistory.Count > 0)
+    {
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Payment ID</th>
+                        <th>Amount</th>
+                        <th>Payment Date</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var pay in Model.Customer.PaymentHistory)
+                    {
+                        <tr>
+                            <td>@pay.PaymentId</td>
+                            <td>Rs. @pay.Amount</td>
+                            <td>@pay.PaymentDate.ToShortDateString()</td>
+                            <td>@pay.Notes</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            <p>No payment history found.</p>
+        </div>
+    }
+
+    <div class="mt-20">
+        <div class="action-links">
+            <a asp-page="/Customers/RecordPayment" asp-route-customerId="@Model.Customer.CustomerId">Record Payment</a>
+            <a asp-page="/Customers/Index">Back</a>
+        </div>
     </div>
-}
-<h1>Payment History Record</h1>
-@if(Model.Customer.PaymentHistory != null && Model.Customer.PaymentHistory.Count > 0)
-{
-    <table>
-        <thead>
-            <tr>
-                <th>Payment Id</th>
-                <th>Amount</th>
-                <th>Payment Date</th>
-                <th>Notes</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var pay in Model.Customer.PaymentHistory)
-            {
-                <tr>
-                    <td>@pay.PaymentId</td>
-                    <td>@pay.Amount</td>
-                    <td>@pay.PaymentDate.ToShortDateString()</td>
-                    <td>@pay.Notes</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <div>
-        <p>No payment history record found.</p>
-    </div>
-}
-<br />
-<div>
-    <a asp-page="/Customers/RecordPayment" asp-route-customerId="@Model.Customer.CustomerId">Record_Payment</a>
-    <a asp-page="/Customers/Index">Back</a>
 </div>

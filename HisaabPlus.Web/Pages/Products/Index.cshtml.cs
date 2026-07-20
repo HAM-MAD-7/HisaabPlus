@@ -50,5 +50,23 @@ namespace HisaabPlus.Web.Pages.Products
                 return Page();
             }
         }
+        public async Task<IActionResult> OnPostReactivateAsync(int productId)
+        {
+            try
+            {
+                var getToken = HttpContext.Session.GetString("JwtToken");
+                if (getToken == null)
+                {
+                    return RedirectToPage("/Auth/Login");
+                }
+                await _apiService.PutAsync<bool>($"api/product/ReactivateProduct/{productId}", null, getToken);
+                return RedirectToPage("/Products/Index");
+            }
+            catch (Exception)
+            {
+                ErrorMessage = "Failed to reactivate product. Try again.";
+                return Page();
+            }
+        }
     }
 }

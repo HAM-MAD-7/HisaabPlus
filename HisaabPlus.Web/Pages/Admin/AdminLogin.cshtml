@@ -2,31 +2,37 @@
 @model HisaabPlus.Web.Pages.Admin.AdminLoginModel
 @{
 }
-<div>
-    <h1>Admin Login</h1>
-</div>
-@if(!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div>
-        <p style="color:red">@Model.ErrorMessage</p>
-    </div>
-}
-<form method="post" asp-antiforgery="true">
-    @Html.AntiForgeryToken()
-    <div>
-        <label asp-for="Input.UserName"></label>
-        <input asp-for="Input.UserName"/>
-        <span asp-validation-for="Input.UserName"></span>
-    </div>
 
-    <div>
-        <label asp-for="Input.Password"></label>
-        <input type="password" asp-for="Input.Password" />
-        <span asp-validation-for="Input.Password"></span>
+<div class="page-container">
+    <div class="form-container" style="max-width: 400px;">
+        <h1>Admin Login</h1>
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">
+                <p>@Model.ErrorMessage</p>
+            </div>
+        }
+
+        <form method="post" asp-antiforgery="true">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label asp-for="Input.UserName"></label>
+                <input asp-for="Input.UserName" />
+                <span asp-validation-for="Input.UserName"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.Password"></label>
+                <input type="password" asp-for="Input.Password" />
+                <span asp-validation-for="Input.Password"></span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit">Login</button>
+                <a asp-page="/Index">Cancel</a>
+            </div>
+        </form>
     </div>
-    
-    <div>
-        <button type="submit">Submit</button>
-        <a asp-page="/Index">Cancel</a>
-    </div>
-</form>
+</div>

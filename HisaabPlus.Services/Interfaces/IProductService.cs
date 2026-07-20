@@ -12,6 +12,7 @@ namespace HisaabPlus.Services.Interfaces
         Task<ProductDTO> AddAsync(ProductDTO productDTO, int shopId);
         Task<bool> UpdateAsync(int productId, ProductDTO productDTO, int shopId);
         Task<bool> DeleteAsync(int productId, int shopId);
+        Task<bool> ReactivateAsync(int productId, int shopId);
         Task<List<ProductDTO>> GetLowStockAsync(int shopId);
     }
 }

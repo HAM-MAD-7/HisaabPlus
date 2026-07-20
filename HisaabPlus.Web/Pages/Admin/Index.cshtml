@@ -2,71 +2,90 @@
 @model HisaabPlus.Web.Pages.Admin.IndexModel
 @{
 }
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div>
-        <p style="color:red">@Model.ErrorMessage</p>
+
+<div class="page-container">
+    <div class="page-header">
+        <h1>Admin - Manage Shops</h1>
+        <a asp-page="/Admin/RegisterShop">+ Register New Shop</a>
     </div>
-}
-<div>
-    <a asp-page="/Admin/RegisterShop">Register new shop</a>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <p>@Model.ErrorMessage</p>
+        </div>
+    }
+
+    @if (Model.Shops != null && Model.Shops.Count > 0)
+    {
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Shop Name</th>
+                        <th>Owner Name</th>
+                        <th>Phone Number</th>
+                        <th>Status</th>
+                        <th>Subscription End Date</th>
+                        <th>Days Remaining</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var items in Model.Shops)
+                    {
+                        <tr>
+                            <td>@items.ShopName</td>
+                            <td>@items.OwnerName</td>
+                            <td>@items.PhoneNumber</td>
+                            <td>
+                                @if (items.IsActive)
+                                {
+                                    <span class="text-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="text-warning">Locked</span>
+                                }
+                            </td>
+                            <td>@items.SubscriptionEndDate.ToShortDateString()</td>
+                            <td>
+                                @if (items.DaysRemaining > 0)
+                                {
+                                    <span class="text-success">@items.DaysRemaining days</span>
+                                }
+                                else
+                                {
+                                    <span class="text-warning">Expired</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="action-links">
+                                    @if (items.IsActive == true)
+                                    {
+                                        <form method="post" style="display:inline;">
+                                            <button type="submit" asp-page-handler="Lock" asp-route-shopId="@items.ShopId" class="action-links delete">Lock Shop</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form method="post" style="display:inline;">
+                                            <button type="submit" asp-page-handler="Unlock" asp-route-shopId="@items.ShopId" style="background-color: var(--success);">Unlock Shop</button>
+                                        </form>
+                                    }
+                                    <a asp-page="/Admin/AddSubscription" asp-route-shopId="@items.ShopId">Add Subscription</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            <p>No shops found!</p>
+        </div>
+    }
 </div>
-@if(Model.Shops != null && Model.Shops.Count > 0)
-{
-    <table>
-        <thead>
-            <tr>
-                <th>Shop Name</th>
-                <th>Owner Name</th>
-                <th>Phone Number</th>
-                <th>Status</th>
-                <th>Subscription End Date</th>
-                <th>Days Remaining</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var items in Model.Shops)
-            {
-                <tr>
-                    <td>@items.ShopName</td>
-                    <td>@items.OwnerName</td>
-                    <td>@items.PhoneNumber</td>
-                    <td>
-                        @if (items.IsActive)
-                        {
-                            <span style="color:limegreen">Active</span>
-                        }
-                        else
-                        {
-                            <span style="color:red">Locked</span>
-                        }
-                    </td>
-                    <td>@items.SubscriptionEndDate</td>
-                    <td>@items.DaysRemaining</td>
-                    <td>
-                        @if (items.IsActive == true)
-                        {
-                            <form method="post" style="display:inline">
-                                <button type="submit" asp-page-handler="Lock" asp-route-shopId="@items.ShopId">Lock shop</button>
-                            </form>
-                        }
-                        else
-                        {
-                            <form method="post" style="display:inline">
-                                <button type="submit" asp-page-handler="Unlock" asp-route-shopId="@items.ShopId">Unlock shop</button>
-                            </form>
-                        }
-                        <a asp-page="/Admin/AddSubscription" asp-route-shopId="@items.ShopId">Add Subscription</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <div>
-        <p style="color:red">No shops found!</p>
-    </div>
-}

@@ -81,6 +81,19 @@ namespace HisaabPlus.Api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPut("ReactivateProduct/{productId}")]
+        public async Task<IActionResult> Reactivate(int productId)
+        {
+            try
+            {
+                var result = await _productService.ReactivateAsync(productId, GetShopId());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpGet("LowStock")]
         public async Task<IActionResult> GetLowStock()
         {

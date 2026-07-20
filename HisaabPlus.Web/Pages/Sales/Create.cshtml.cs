@@ -28,7 +28,8 @@ namespace HisaabPlus.Web.Pages.Sales
                 {
                     return RedirectToPage("/Auth/Login");
                 }
-                Products = await _apiService.GetAsync<List<ProductDropdownModel>>("api/product/GetAllProducts", getToken);
+                var allProducts = await _apiService.GetAsync<List<ProductDropdownModel>>("api/product/GetAllProducts", getToken);
+                Products = allProducts.Where(p => p.IsActive == true).ToList();
                 Customers =  await _apiService.GetAsync<List<CustomerResponseModel>>("api/customer/GetCustomer", getToken);
                 if(Input.Items.Count == 0)
                 {
@@ -52,7 +53,8 @@ namespace HisaabPlus.Web.Pages.Sales
                     return RedirectToPage("/Auth/Login");
                 }
 
-                Products = await _apiService.GetAsync<List<ProductDropdownModel>>("api/product/GetAllProducts", getToken);
+                var allProducts = await _apiService.GetAsync<List<ProductDropdownModel>>("api/product/GetAllProducts", getToken);
+                Products = allProducts.Where(p => p.IsActive == true).ToList();
                 Customers = await _apiService.GetAsync<List<CustomerResponseModel>>("api/customer/GetCustomer", getToken);
 
                 if (Action == "AddItem")

@@ -29,8 +29,9 @@ namespace HisaabPlus.Web.Pages.StockPurchase
                     return RedirectToPage("/Auth/Login");
                 }
                 Suppliers = await _apiService.GetAsync<List<SupplierResponseModel>>("api/supplier/GetAllSupplier", getToken);
-                Products = await _apiService.GetAsync<List<ProductDropdownModel>>("api/product/GetAllProducts", getToken);
-                if(Input.Items.Count == 0)
+                var allProducts = await _apiService.GetAsync<List<ProductDropdownModel>>("api/product/GetAllProducts", getToken);
+                Products = allProducts.Where(p => p.IsActive == true).ToList();
+                if (Input.Items.Count == 0)
                 {
                     Input.Items.Add(new StockPurchaseItemInputModel());
                 }
@@ -53,8 +54,9 @@ namespace HisaabPlus.Web.Pages.StockPurchase
                     return RedirectToPage("/Auth/Login");
                 }
                 Suppliers = await _apiService.GetAsync<List<SupplierResponseModel>>("api/supplier/GetAllSupplier", getToken);
-                Products = await _apiService.GetAsync<List<ProductDropdownModel>>("api/product/GetAllProducts", getToken);
-                if(Action == "AddStock")
+                var allProducts = await _apiService.GetAsync<List<ProductDropdownModel>>("api/product/GetAllProducts", getToken);
+                Products = allProducts.Where(p => p.IsActive == true).ToList();
+                if (Action == "AddStock")
                 {
                     Input.Items.Add(new StockPurchaseItemInputModel());
                     return Page();

@@ -2,91 +2,110 @@
 @model HisaabPlus.Web.Pages.StockPurchase.CreateModel
 @{
 }
-<div>
-    <h1>Add Stock</h1>
-</div>
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <div>
-        <p style="color:red">@Model.ErrorMessage</p>
-    </div>
-}
-<form method="post" id="purchaseForm" asp-antiforgery="true">
-    @Html.AntiForgeryToken()
-    <div>
-        <select asp-for="Input.SupplierId" asp-items="@(new SelectList(Model.Suppliers, "SupplierId", "SupplierName"))">
-            <option>Suppliers</option>
-        </select>
-    </div>
-    <table>
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Total Price</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for(int i = 0; i < Model.Input.Items.Count; i++)
-            {
-                <tr>
-                    <td>
-                        <select asp-for="Input.Items[i].ProductId" asp-items="@(new SelectList(Model.Products, "ProductId", "ProductName"))">
-                            <option>Products</option>
+
+<div class="page-container">
+    <div class="form-container">
+        <h1>Record Stock Purchase</h1>
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">
+                <p>@Model.ErrorMessage</p>
+            </div>
+        }
+
+        <form method="post" id="purchaseForm" asp-antiforgery="true">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label>Supplier</label>
+                <select asp-for="Input.SupplierId" asp-items="@(new SelectList(Model.Suppliers, "SupplierId", "SupplierName"))">
+                    <option>-- Select Supplier --</option>
+                </select>
+            </div>
+
+            <h3 class="mt-20">Products</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Total Price</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Input.Items.Count; i++)
+                        {
+                            <tr>
+                                <td>
+                                    <select asp-for="Input.Items[i].ProductId" asp-items="@(new SelectList(Model.Products, "ProductId", "ProductName"))">
+                                        <option>-- Select --</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number" step="1" asp-for="Input.Items[i].Quantity" />
+                                </td>
+                                <td>
+                                    <input type="number" step="0.01" asp-for="Input.Items[i].UnitPrice" />
+                                </td>
+                                <td>
+                                    <input type="text" readonly value="@(Model.Input.Items[i].Quantity * Model.Input.Items[i].UnitPrice)" />
+                                    <input type="hidden" asp-for="Input.Items[i].TotalPrice" value="@(Model.Input.Items[i].Quantity * Model.Input.Items[i].UnitPrice)" />
+                                </td>
+                                <td>
+                                    <button type="submit" name="Action" value="RemoveStock" onclick="removeItem(@i)">Remove</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <input type="hidden" id="RemoveIndex" name="RemoveIndex" value="0" />
+            <button type="submit" name="Action" value="AddStock" class="mt-20">+ Add Another Item</button>
+
+            <div class="card mt-20">
+                <div class="card-header">Payment Details</div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Total Amount</label>
+                        <input readonly value="Rs. @(Model.Input.Items.Where(p => p.ProductId > 0).Sum(i => i.Quantity * i.UnitPrice))" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Paid Amount</label>
+                        <input type="number" step="0.01" asp-for="Input.PaidAmount" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Remaining Amount</label>
+                        <input readonly value="Rs. @(Model.Input.Items.Where(p => p.ProductId > 0).Sum(i => i.Quantity * i.UnitPrice) - Model.Input.PaidAmount)" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Payment Type</label>
+                        <select asp-for="Input.PaymentType">
+                            <option value="">-- Select Payment Type --</option>
+                            <option value="cash">Cash</option>
+                            <option value="credit">Credit</option>
                         </select>
-                    </td>
-                    <td>
-                        <input type="number" step="0.01" asp-for="Input.Items[i].Quantity" />
-                    </td>
-                    <td>
-                        <input type="number" step="0.01" asp-for="Input.Items[i].UnitPrice" />
-                    </td>
-                    <td>
-                        <input type="text" readonly value="@(Model.Input.Items[i].Quantity * Model.Input.Items[i].UnitPrice)" />
-                        <input type="hidden" asp-for="Input.Items[i].TotalPrice" value="@(Model.Input.Items[i].Quantity * Model.Input.Items[i].UnitPrice)" />
-                    </td>
-                    <td>
-                        <button type="submit" name="Action" value="RemoveStock" onclick="removeItem(@i)">Remove</button>
-                    </td>
-                </tr>    
-            }
-        </tbody>
-    </table>
-    <input type="hidden" id="RemoveIndex" name="RemoveIndex" value="0"/>
-    <button type="submit" name="Action" value="AddStock">+ Add another item</button>
-    <div>
-        <h1>Payment Details</h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" name="Action" value="CreatePurchase">Create Purchase</button>
+                <a asp-page="/StockPurchase/Index">Cancel</a>
+            </div>
+        </form>
     </div>
-    <div>
-        <label>Total Amount</label>
-        <input readonly value="@(Model.Input.Items.Where(p => p.ProductId > 0).Sum(i => i.Quantity * i.UnitPrice))" />
-    </div>
-    <div>
-        <label>Paid Amount</label>
-        <input type="number" step="0.01" asp-for="Input.PaidAmount" />
-    </div>
-    <div>
-        <label>Remaining Amount</label>
-        <input readonly value="@(Model.Input.Items.Where(p => p.ProductId > 0).Sum(i => i.Quantity * i.UnitPrice) - Model.Input.PaidAmount)" />
-    </div>
-    <div>
-        <label>Payment Type</label>
-        <select asp-for="Input.PaymentType">
-            <option value="">Select Payment</option>
-            <option value="cash">Cash</option>
-            <option value="credit">Credit</option>
-        </select>
-    </div>
-    <div>
-        <button type="submit" name="Action" value="CreatePurchase">Create Purchase</button>
-        <a asp-page="/StockPurchase/Index">Cancel</a>
-    </div>
-</form>
+</div>
+
 <script>
-    function removeItem(index)
-    {
+    function removeItem(index) {
         document.getElementById("RemoveIndex").value = index;
         document.getElementById("purchaseForm").submit();
     }
