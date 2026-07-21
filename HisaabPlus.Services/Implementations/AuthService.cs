@@ -109,7 +109,7 @@ namespace HisaabPlus.Services.Implementations
                 PasswordHash = passwordHash,
                 IsActive = true,
                 SubscriptionStartDate = GetPakistanTime(),
-                SubscriptionEndDate = GetPakistanTime().AddDays(14),
+                SubscriptionEndDate = GetPakistanTime().AddDays(3),
                 CreatedAt = GetPakistanTime()
             };
             _db.Shops.Add(shop);

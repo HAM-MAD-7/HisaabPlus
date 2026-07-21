@@ -16,6 +16,13 @@
         </div>
     }
 
+    @if (Model.Shops != null && Model.Shops.Any(s => s.DaysRemaining <= 3 && s.DaysRemaining > 0))
+    {
+        <div class="alert alert-danger mt-20">
+            <p>⚠️ <strong>@Model.Shops.Count(s => s.DaysRemaining <= 3 && s.DaysRemaining > 0) shop(s) have subscriptions expiring soon!</strong></p>
+        </div>
+    }
+
     @if (Model.Shops != null && Model.Shops.Count > 0)
     {
         <div class="table-responsive">
@@ -34,7 +41,7 @@
                 <tbody>
                     @foreach (var items in Model.Shops)
                     {
-                        <tr>
+                        <tr style="@(items.DaysRemaining <= 3 && items.DaysRemaining > 0 ? "background-color: #FFE5E5;" : "")">
                             <td>@items.ShopName</td>
                             <td>@items.OwnerName</td>
                             <td>@items.PhoneNumber</td>
@@ -63,14 +70,18 @@
                                 <div class="action-links">
                                     @if (items.IsActive == true)
                                     {
-                                        <form method="post" style="display:inline;">
-                                            <button type="submit" asp-page-handler="Lock" asp-route-shopId="@items.ShopId" class="action-links delete">Lock Shop</button>
+                                        <button type="button" class="action-links delete" onclick="showConfirmModal('lock', @items.ShopId)">Lock Shop</button>
+
+                                        <form id="lockForm_@items.ShopId" method="post" asp-page-handler="Lock" style="display:none;">
+                                            <input type="hidden" name="shopId" value="@items.ShopId" />
                                         </form>
                                     }
                                     else
                                     {
-                                        <form method="post" style="display:inline;">
-                                            <button type="submit" asp-page-handler="Unlock" asp-route-shopId="@items.ShopId" style="background-color: var(--success);">Unlock Shop</button>
+                                        <button type="button" style="background-color: var(--success);" onclick="showConfirmModal('unlock', @items.ShopId)">Unlock Shop</button>
+
+                                        <form id="unlockForm_@items.ShopId" method="post" asp-page-handler="Unlock" style="display:none;">
+                                            <input type="hidden" name="shopId" value="@items.ShopId" />
                                         </form>
                                     }
                                     <a asp-page="/Admin/AddSubscription" asp-route-shopId="@items.ShopId">Add Subscription</a>
@@ -88,4 +99,40 @@
             <p>No shops found!</p>
         </div>
     }
+</div>
+<script>
+    function showConfirmModal(action, shopId) {
+        const modal = document.getElementById('confirmModal');
+        const message = document.getElementById('confirmMessage');
+        const confirmBtn = document.getElementById('confirmBtn');
+
+        if (action === 'lock') {
+            message.textContent = 'Are you sure you want to lock this shop?';
+            confirmBtn.onclick = function() {
+                document.getElementById('lockForm_' + shopId).submit();
+            };
+        } else if (action === 'unlock') {
+            message.textContent = 'Are you sure you want to unlock this shop?';
+            confirmBtn.onclick = function() {
+                document.getElementById('unlockForm_' + shopId).submit();
+            };
+        }
+
+        modal.classList.add('show');
+    }
+
+    function closeConfirmModal() {
+        document.getElementById('confirmModal').classList.remove('show');
+    }
+</script>
+
+<div id="confirmModal" class="modal">
+    <div class="modal-content">
+        <h3>⚠️ Confirm Action</h3>
+        <p id="confirmMessage"></p>
+        <div class="modal-actions">
+            <button class="confirm-btn" id="confirmBtn">Confirm</button>
+            <button class="cancel-btn" onclick="closeConfirmModal()">Cancel</button>
+        </div>
+    </div>
 </div>

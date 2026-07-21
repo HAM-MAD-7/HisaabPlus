@@ -16,6 +16,13 @@
         </div>
     }
 
+    @if (Model.Products != null && Model.Products.Any(p => p.CurrentStock <= p.LowStockLimit))
+    {
+        <div class="alert alert-danger mt-20">
+            <p>⚠️ <strong>@Model.Products.Count(p => p.CurrentStock <= p.LowStockLimit) product(s) are low on stock!</strong></p>
+        </div>
+    }
+
     @if (Model.Products != null && Model.Products.Count > 0)
     {
         <div class="table-responsive">
@@ -35,7 +42,7 @@
                 <tbody>
                     @foreach (var product in Model.Products)
                     {
-                        <tr>
+                        <tr style="@(product.CurrentStock <= product.LowStockLimit ? "background-color: #FFE5E5;" : "")">
                             <td>@product.ProductName</td>
                             <td>@product.Category</td>
                             <td>Rs. @product.PurchasePrice</td>
@@ -57,16 +64,16 @@
                                     <a asp-page="/Products/Edit" asp-route-productId="@product.ProductId">Edit</a>
                                     @if (product.IsActive)
                                     {
-                                        <form method="post" asp-page-handler="Delete" style="display:inline;">
+                                        <button type="button" class="action-links delete" onclick="showConfirmModal('deactivate', @product.ProductId)">Deactivate</button>
+                                        <form id="deactivateForm_@product.ProductId" method="post" asp-page-handler="Delete" style="display:none;">
                                             <input type="hidden" name="productId" value="@product.ProductId" />
-                                            <button type="submit" class="action-links delete">Deactivate</button>
                                         </form>
                                     }
                                     else
                                     {
-                                        <form method="post" asp-page-handler="Reactivate" style="display:inline;">
+                                        <button type="button" class="action-links delete" onclick="showConfirmModal('reactivate', @product.ProductId)">Reactivate</button>
+                                        <form id="reactivateForm_@product.ProductId" method="post" asp-page-handler="Reactivate" style="display:none;">
                                             <input type="hidden" name="productId" value="@product.ProductId" />
-                                            <button type="submit" class="action-links" style="background-color: var(--success);">Reactivate</button>
                                         </form>
                                     }
                                 </div>
@@ -83,4 +90,40 @@
             <p>No products found.</p>
         </div>
     }
+</div>
+<script>
+    function showConfirmModal(action, productId) {
+        const modal = document.getElementById('confirmModal');
+        const message = document.getElementById('confirmMessage');
+        const confirmBtn = document.getElementById('confirmBtn');
+
+        if (action === 'deactivate') {
+            message.textContent = 'Are you sure you want to deactivate this product?';
+            confirmBtn.onclick = function() {
+                document.getElementById('deactivateForm_' + productId).submit();
+            };
+        } else if (action === 'reactivate') {
+            message.textContent = 'Are you sure you want to reactivate this product?';
+            confirmBtn.onclick = function() {
+                document.getElementById('reactivateForm_' + productId).submit();
+            };
+        }
+
+        modal.classList.add('show');
+    }
+
+    function closeConfirmModal() {
+        document.getElementById('confirmModal').classList.remove('show');
+    }
+</script>
+
+<div id="confirmModal" class="modal">
+    <div class="modal-content">
+        <h3>⚠️ Confirm Action</h3>
+        <p id="confirmMessage"></p>
+        <div class="modal-actions">
+            <button class="confirm-btn" id="confirmBtn">Confirm</button>
+            <button class="cancel-btn" onclick="closeConfirmModal()">Cancel</button>
+        </div>
+    </div>
 </div>

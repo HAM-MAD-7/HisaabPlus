@@ -7,6 +7,51 @@
 <div class="dashboard-container">
     <h1 class="page-title">Dashboard</h1>
 
+    @if (@Model.Dashboard.LowStockCount > 0 || @Model.Dashboard.TotalCustomerBalance > 0 || @Model.Dashboard.TotalSupplierBalance > 0)
+    {
+        <div class="alerts-container">
+            <h2 class="alerts-title">⚠️ Critical Alerts</h2>
+
+            <div class="alerts-grid">
+                @if (@Model.Dashboard.LowStockCount > 0)
+                {
+                    <div class="alert-card alert-warning">
+                        <div class="alert-icon">📦</div>
+                        <div class="alert-content">
+                            <h3>Low Stock Products</h3>
+                            <p class="alert-number">@Model.Dashboard.LowStockCount Products</p>
+                            <a asp-page="/Products/Index" class="alert-link">View Products →</a>
+                        </div>
+                    </div>
+                }
+
+                @if (@Model.Dashboard.TotalCustomerBalance > 0)
+                {
+                    <div class="alert-card alert-danger">
+                        <div class="alert-icon">👥</div>
+                        <div class="alert-content">
+                            <h3>Customer Payments Due</h3>
+                            <p class="alert-number">Rs. @Model.Dashboard.TotalCustomerBalance</p>
+                            <a asp-page="/Customers/Index" class="alert-link">Collect Payment →</a>
+                        </div>
+                    </div>
+                }
+
+                @if (@Model.Dashboard.TotalSupplierBalance > 0)
+                {
+                    <div class="alert-card alert-info">
+                        <div class="alert-icon">🏭</div>
+                        <div class="alert-content">
+                            <h3>Supplier Payments Due</h3>
+                            <p class="alert-number">Rs. @Model.Dashboard.TotalSupplierBalance</p>
+                            <a asp-page="/Suppliers/Index" class="alert-link">Pay Suppliers →</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
     <div class="dashboard-grid">
  
         <div class="card">
